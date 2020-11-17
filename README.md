@@ -21,6 +21,9 @@
 
 - [Install](#install)
 - [Usage](#usage)
+  - [TTY capabilities](#tty-capabilities)
+- [Status](#status)
+  - [TODO](#todo)
 - [What's in a name?](#whats-in-a-name)
 - [Changelog](#changelog)
 - [Contributing](#contributing)
@@ -43,6 +46,29 @@ console.log(fude('筆', bgRed, white) + fude(' fude ', bgWhite, black))
 
 console.log(bgRed(white`筆`) + bgWhite(black` fude `))
 ```
+
+### TTY capabilities
+
+To check what your TTY is capable of, call this handy function:
+
+```js
+import { availableOrnamentCodes } from 'fude'
+
+console.log(availableOrnamentCodes())
+```
+
+## Status
+
+This project has just started. I want to put it out there, but there are few things I want to add and few things I need to refactor a bit. Nonetheless, this library is very much usable as it is right now.
+
+### TODO
+
+- [ ] Better documentation
+- [ ] Add a couple of cool features ✨
+- [ ] Add some benchmark to show that this lib is the bestest :unicorn:
+- [ ] Revise code comments
+- [ ] ???
+- [ ] Profit
 
 ## What's in a name?
 
