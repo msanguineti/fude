@@ -9,6 +9,14 @@ export default [
       { file: pkg.main, format: 'cjs' },
       { file: pkg.module, format: 'es' },
     ],
-    plugins: [typescript(), terser({ format: { ecma: 2017, beautify: true } })],
+    plugins: [
+      typescript({
+        tsconfigOverride: {
+          include: ['src/index.ts'],
+          exclude: ['node_modules', 'test', 'lib', '**/*spec.ts'],
+        },
+      }),
+      terser({ format: { ecma: 2017, beautify: true } }),
+    ],
   },
 ]
