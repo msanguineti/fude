@@ -8,7 +8,7 @@
 ![npm_types](https://badgen.net/npm/types/fude)
 ![bundle_tree](https://badgen.net/bundlephobia/tree-shaking/fude)
 ![size](https://badgen.net/packagephobia/install/fude)
-![coveralls](https://badgen.net/coveralls/c/github/msanguineti/fude)
+![coveralls](https://badgen.net/coveralls/c/github/msanguineti/fude/main)
 ![dependabot](https://badgen.net/github/dependabot/msanguineti/fude)
 ![Node.js CI](https://github.com/msanguineti/fude/workflows/Node.js%20CI/badge.svg)
 ![CodeQL](https://github.com/msanguineti/fude/workflows/CodeQL/badge.svg)
