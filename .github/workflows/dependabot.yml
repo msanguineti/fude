@@ -1,10 +1,6 @@
 name: Dependabot Automerge
 on:
-  check_suite:
-    types:
-      - completed
   pull_request:
-    branches: [main]
 
 jobs:
   worker:
@@ -13,16 +9,64 @@ jobs:
     steps:
       - uses: actions/github-script@v3
         with:
-          script: |-
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
             github.pulls.createReview({
               owner: context.payload.repository.owner.login,
               repo: context.payload.repository.name,
               pull_number: context.payload.pull_request.number,
               event: 'APPROVE'
             })
-            github.pulls.merge({
-              owner: context.payload.repository.owner.login,
-              repo: context.payload.repository.name,
-              pull_number: context.payload.pull_request.number,
-              merge_method: 'squash'
-            })
+
+            let status_checks = []
+
+            const branch = (
+              await github.repos.getBranch({
+                owner: context.payload.repository.owner.login,
+                repo: context.payload.repository.name,
+                branch: context.payload.pull_request.base.ref,
+              })
+            ).data
+
+            if (branch.protected === true && branch.protection.enabled === true) {
+              status_checks = branch.protection.required_status_checks.contexts || []
+            }
+
+            console.log('Require Checks',  JSON.stringify(status_checks))
+
+            // 30 seconds initial delay
+            let delay = 30000;
+            let t = 0
+
+            let timerId = setTimeout(async function request() {
+
+              const checkRuns = (
+                await github.checks.listForRef({
+                  owner: context.payload.repository.owner.login,
+                  repo: context.payload.repository.name,
+                  ref: context.payload.pull_request.head.sha,
+                })
+              ).data.check_runs
+
+              const all_green = status_checks.every(requiredCheck =>
+                checkRuns.some(checkRun => checkRun.name === requiredCheck && checkRun.conclusion === 'success')
+              )  
+
+              // max ~5 minutes
+              if (!all_green && (t+=delay) < 300_000) {
+                delay = Math.floor(Math.random() * 15000 + 5000)
+                timerId = setTimeout(request, delay);
+              }
+              else {
+                clearInterval(timerId) 
+                
+                if(all_green) {
+                  github.pulls.merge({
+                    owner: context.payload.repository.owner.login,
+                    repo: context.payload.repository.name,
+                    pull_number: context.payload.pull_request.number,
+                    merge_method: 'merge'
+                  })
+                }
+              }
+            }, delay);
