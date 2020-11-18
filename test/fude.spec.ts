@@ -1,5 +1,9 @@
 import * as fude from '../src'
 
+beforeEach(() => {
+  process.env.FORCE_COLOURS = '1'
+})
+
 describe('core functionalities', () => {
   test('single ornament', () => {
     const output = { text: fude.fude('bar', fude.red) }
@@ -19,7 +23,6 @@ describe('core functionalities', () => {
     process.env.FORCE_COLOURS = '0'
     const output = { text: fude.fude('bar', fude.red) }
     expect(output).toMatchSnapshot({ text: expect.stringMatching('bar') })
-    process.env.FORCE_COLOURS = '1'
   })
 })
 
