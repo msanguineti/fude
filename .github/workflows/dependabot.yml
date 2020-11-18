@@ -1,5 +1,11 @@
 name: Dependabot Automerge
-on: pull_request
+on:
+  check_suite:
+    types:
+      - completed
+  pull_request:
+    branches: [main]
+
 jobs:
   worker:
     runs-on: ubuntu-latest
