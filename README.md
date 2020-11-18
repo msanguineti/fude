@@ -2,6 +2,17 @@
 
 > [nodejs][nodejs] library for terminal text style formatting.
 
+[![npm](https://badgen.net/npm/v/fude)](https://npmjs.com/fude)
+![npm_dt](https://badgen.net/npm/dt/fude)
+![npm_license](https://badgen.net/npm/license/fude)
+![npm_types](https://badgen.net/npm/types/fude)
+![bundle_tree](https://badgen.net/bundlephobia/tree-shaking/fude)
+![size](https://badgen.net/packagephobia/install/fude)
+![coveralls](https://badgen.net/coveralls/c/github/msanguineti/fude)
+![dependabot](https://badgen.net/github/dependabot/msanguineti/fude)
+![Node.js CI](https://github.com/msanguineti/fude/workflows/Node.js%20CI/badge.svg)
+![CodeQL](https://github.com/msanguineti/fude/workflows/CodeQL/badge.svg)
+
 - Fast loading, fast performing
 - ANSI Codes complete
 - 100% tree-shakeable by design
@@ -22,6 +33,7 @@
 - [Install](#install)
 - [Usage](#usage)
   - [TTY capabilities](#tty-capabilities)
+  - [TypeScript](#typescript)
 - [Status](#status)
   - [TODO](#todo)
 - [What's in a name?](#whats-in-a-name)
@@ -56,6 +68,10 @@ import { availableOrnamentCodes } from 'fude'
 
 console.log(availableOrnamentCodes())
 ```
+
+### TypeScript
+
+TypeScript types are included.
 
 ## Status
 

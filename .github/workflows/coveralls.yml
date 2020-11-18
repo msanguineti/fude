@@ -1,0 +1,28 @@
+on:
+  pull_request:
+    branches:
+      - main
+
+name: Test Coveralls
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js 14.x
+        uses: actions/setup-node@v2.1.2
+        with:
+          node-version: 14.x
+
+      - name: npm install, make test-coverage
+        run: |
+          npm install
+          npm t -- --coverage
+
+      - name: Coveralls GitHub Action
+        uses: coverallsapp/github-action@v1.1.2
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
