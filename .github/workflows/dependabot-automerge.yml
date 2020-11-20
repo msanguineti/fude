@@ -51,7 +51,12 @@ jobs:
               ).data.check_runs
 
               const all_green = status_checks.every(requiredCheck =>
-                checkRuns.some(checkRun => checkRun.name === requiredCheck && checkRun.conclusion === 'success')
+                checkRuns.some(checkRun => {
+                  const name = checkRun.name
+                  const conclusion = checkRun.conclusion
+                  //console.log(name,conclusion)   
+                  return name === requiredCheck && (conclusion === 'success' || conclusion === 'skipped') 
+                })
               )  
 
               // max ~5 minutes
