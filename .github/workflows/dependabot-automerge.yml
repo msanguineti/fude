@@ -54,7 +54,7 @@ jobs:
                 checkRuns.some(checkRun => {
                   const name = checkRun.name
                   const conclusion = checkRun.conclusion
-                  //console.log(name,conclusion)   
+                  console.log(name,conclusion)   
                   return name === requiredCheck && (conclusion === 'success' || conclusion === 'skipped') 
                 })
               )  
