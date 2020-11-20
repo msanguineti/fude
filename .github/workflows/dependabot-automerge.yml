@@ -7,7 +7,7 @@ on:
 jobs:
   worker:
     runs-on: ubuntu-latest
-#     if: github.actor == 'dependabot[bot]'
+    if: github.actor == 'dependabot[bot]'
     steps:
       - uses: actions/github-script@v3
         with:
@@ -54,13 +54,13 @@ jobs:
                 checkRuns.some(checkRun => {
                   const name = checkRun.name
                   const conclusion = checkRun.conclusion
-                  console.log(name,conclusion)   
-                  return name === requiredCheck && conclusion === 'success' 
+                  //console.log(name,conclusion)   
+                  return name === requiredCheck && (conclusion === 'success' || conclusion === 'skipped') 
                 })
               )  
 
               // max ~5 minutes
-              if (!all_green && (t+=delay) < 150_000) {
+              if (!all_green && (t+=delay) < 300_000) {
                 delay = Math.floor(Math.random() * 15000 + 5000)
                 timerId = setTimeout(request, delay);
               }
@@ -68,12 +68,12 @@ jobs:
                 clearInterval(timerId) 
                 
                 if(all_green) {
-                  //github.pulls.merge({
-                  //  owner: context.payload.repository.owner.login,
-                  //  repo: context.payload.repository.name,
-                  //  pull_number: context.payload.pull_request.number,
-                  //  merge_method: 'merge'
-                  //})
+                  github.pulls.merge({
+                    owner: context.payload.repository.owner.login,
+                    repo: context.payload.repository.name,
+                    pull_number: context.payload.pull_request.number,
+                    merge_method: 'merge'
+                  })
                 }
               }
             }, delay);
