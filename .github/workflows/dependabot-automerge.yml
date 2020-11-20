@@ -51,11 +51,16 @@ jobs:
               ).data.check_runs
 
               const all_green = status_checks.every(requiredCheck =>
-                checkRuns.some(checkRun => checkRun.name === requiredCheck && checkRun.conclusion === 'success')
+                checkRuns.some(checkRun => {
+                  const name = checkRun.name
+                  const conclusion = checkRun.conclusion
+                  console.log(name,conclusion)   
+                  return name === requiredCheck && conclusion === 'success' 
+                })
               )  
 
               // max ~5 minutes
-              if (!all_green && (t+=delay) < 300_000) {
+              if (!all_green && (t+=delay) < 150_000) {
                 delay = Math.floor(Math.random() * 15000 + 5000)
                 timerId = setTimeout(request, delay);
               }
