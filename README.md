@@ -16,15 +16,16 @@
 - Fast loading, fast performing
 - ANSI Codes complete
 - 100% tree-shakeable by design
-- Font modifiers <!-- omit in toc -->
+- Template literals friendly
+- Font modifiers
 
 ![ornaments](media/text_ornaments.gif)
 
-- Foreground colours (normal & bright) <!-- omit in toc -->
+- Foreground colours (normal & bright)
 
 ![fg_colours](media/foreground_colours.png)
 
-- Background colours (normal & bright) <!-- omit in toc -->
+- Background colours (normal & bright)
 
 ![bg_colours](media/background_colours.png)
 
@@ -57,6 +58,18 @@ console.log(fude('筆', bgRed, white) + fude(' fude ', bgWhite, black))
 // alternatively...
 
 console.log(bgRed(white`筆`) + bgWhite(black` fude `))
+
+// ...template literals
+
+console.log(bgRed`${white`筆`}` + bgWhite`${black` fude `}`)
+
+// nesting (same result, slightly different intentions with the backgrounds)...
+
+console.log(bgRed(white('筆') + bgWhite(` ${black('fude')} `)))
+
+// template literals (also nested)...
+
+console.log(bgRed`${white`筆`}${bgWhite` ${black`fude`} `}`)
 ```
 
 ### TTY capabilities

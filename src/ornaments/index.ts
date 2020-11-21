@@ -4,7 +4,12 @@
  * @param text the input string
  * @returns the modified input string
  */
-export type CharacterOrnament = (text: string) => string
+export type CharacterOrnament = (
+  ...text:
+    | TemplateStringsArray[]
+    | string[]
+    | [TemplateStringsArray, ...string[]]
+) => string
 
 /**
  * 文字装飾コード番号 - The character ornament to apply
@@ -14,71 +19,102 @@ export type CharacterOrnament = (text: string) => string
 export type OrnamentCode = number
 
 /**
- * true if we are in a TTY environment or whatever the user has set FORCE_COLOURS to.
+ * `true` if we are in a TTY environment or whatever the user has set FORCE_COLORS to.
  */
 const forceColours = () =>
-  process.env.FORCE_COLOURS
-    ? /^\s*(true|1|on)\s*$/i.test(process.env.FORCE_COLOURS)
+  process.env.FORCE_COLORS
+    ? /^\s*(true|1|on)\s*$/i.test(process.env.FORCE_COLORS)
     : process.stdout.isTTY
 
 /**
- * 筆致 - Only apply the given modifier to the input string if we are in a TTY environment or if the FORCE_COLOURS flag is set.
+ * Wraps some text with ANSI codes only if we are in a TTY environment or the user has explicitly set FORCE_COLORS
+ *
+ * @param on ansi escape code on switch
+ * @param text the text to wrap with the ansi escape codes
+ * @param off ansi escape code off switch
+ * @returns `on` + `text` + `off` OR `text`
+ */
+const wrap = (on: number, text: string, off: number) => {
+  return forceColours()
+    ? `\x1b[${on}m${text.replace(
+        new RegExp(`\\x1b\\[${off}m`, 'g'),
+        `\x1b[${off}m\x1b[${on}m`
+      )}\x1b[${off}m`
+    : text
+}
+
+/**
+ * 筆致 - Only apply the given modifier to the input string if we are in a TTY environment or if the FORCE_COLORS flag is set.
  *
  * @param text the input string
  * @param on the modifier on code
  * @param off the modifier off code
  * @returns a string with the applied modifier
  */
-const hitchi = ({ on, off }: { on: number; off: number }) => (text: string) =>
-  forceColours() ? `\x1b[${on}m${text}\x1b[${off}m` : text
+// const hitchi = ({ on, off }: { on: number; off: number }) =>    forceColours() ? `\x1b[${on}m${text}\x1b[${off}m` : text
+const hitchi = ({ on, off }: { on: number; off: number }) => (
+  ...input:
+    | TemplateStringsArray[]
+    | string[]
+    | [TemplateStringsArray, ...string[]]
+) => {
+  const [strings, ...keys] = input
+
+  const ret = [...strings]
+  for (let i = 0; i < keys.length; i++) {
+    ret.splice(i + i + 1, 0, keys[i] as string)
+  }
+
+  return wrap(on, ret.join(''), off)
+}
 
 /**
  * All attributes off.
  *
  * @param text the input string
  */
-export const reset: CharacterOrnament = (text: string) =>
-  hitchi({ on: 0, off: 0 })(text)
+export const reset: CharacterOrnament = (...text) =>
+  hitchi({ on: 0, off: 0 })(...text)
 
 /**
  * Bold or increased intensity.
  *
  * @param text the input string
  */
-export const bold: CharacterOrnament = (text: string) =>
-  hitchi({ on: 1, off: 22 })(text)
+export const bold: CharacterOrnament = (...text) =>
+  hitchi({ on: 1, off: 22 })(...text)
 
 /**
  * Faint or decreased intensity.
  *
  * @param text the input string
  */
-export const dim: CharacterOrnament = (text: string) =>
-  hitchi({ on: 2, off: 22 })(text)
+export const dim: CharacterOrnament = (...text) =>
+  hitchi({ on: 2, off: 22 })(...text)
 
 /**
  * Italic text.
  *
  * @param text the input string
  */
-export const italic: CharacterOrnament = (text: string) =>
-  hitchi({ on: 3, off: 23 })(text)
+export const italic: CharacterOrnament = (...text) =>
+  hitchi({ on: 3, off: 23 })(...text)
 
 /**
  * Underline text.
  *
  * @param text the input string
  */
-export const underline: CharacterOrnament = (text: string) =>
-  hitchi({ on: 4, off: 24 })(text)
+export const underline: CharacterOrnament = (...text) =>
+  hitchi({ on: 4, off: 24 })(...text)
 
 /**
  * Double-Underline text.
  *
  * @param text the input string
  */
-export const doublyUnderline: CharacterOrnament = (text: string) =>
-  hitchi({ on: 21, off: 24 })(text)
+export const doublyUnderline: CharacterOrnament = (...text) =>
+  hitchi({ on: 21, off: 24 })(...text)
 
 /**
  * Text blinks less than 150 times per minute.
@@ -87,8 +123,8 @@ export const doublyUnderline: CharacterOrnament = (text: string) =>
  *
  * @param text the input string
  */
-export const blinkSlow: CharacterOrnament = (text: string) =>
-  hitchi({ on: 5, off: 25 })(text)
+export const blinkSlow: CharacterOrnament = (...text) =>
+  hitchi({ on: 5, off: 25 })(...text)
 
 /**
  * Text blinks more than 150 times per minute.
@@ -97,8 +133,8 @@ export const blinkSlow: CharacterOrnament = (text: string) =>
  *
  * @param text the input string
  */
-export const blinkFast: CharacterOrnament = (text: string) =>
-  hitchi({ on: 6, off: 26 })(text)
+export const blinkFast: CharacterOrnament = (...text) =>
+  hitchi({ on: 6, off: 26 })(...text)
 
 /**
  * Reverse / Invert text.
@@ -107,16 +143,16 @@ export const blinkFast: CharacterOrnament = (text: string) =>
  *
  * @param text the input string
  */
-export const invert: CharacterOrnament = (text: string) =>
-  hitchi({ on: 7, off: 27 })(text)
+export const invert: CharacterOrnament = (...text) =>
+  hitchi({ on: 7, off: 27 })(...text)
 
 /**
  * Conceal / Hide text.
  *
  * @param text the input string
  */
-export const hide: CharacterOrnament = (text: string) =>
-  hitchi({ on: 8, off: 28 })(text)
+export const hide: CharacterOrnament = (...text) =>
+  hitchi({ on: 8, off: 28 })(...text)
 
 /**
  * Crossed-out / Strike-through text.
@@ -125,8 +161,8 @@ export const hide: CharacterOrnament = (text: string) =>
  *
  * @param text the input string
  */
-export const strikethrough: CharacterOrnament = (text: string) =>
-  hitchi({ on: 9, off: 29 })(text)
+export const strikethrough: CharacterOrnament = (...text) =>
+  hitchi({ on: 9, off: 29 })(...text)
 
 /**
  * Black foreground colour.
@@ -135,8 +171,8 @@ export const strikethrough: CharacterOrnament = (text: string) =>
  *
  * @param text the input string
  */
-export const black: CharacterOrnament = (text: string) =>
-  hitchi({ on: 30, off: 39 })(text)
+export const black: CharacterOrnament = (...text) =>
+  hitchi({ on: 30, off: 39 })(...text)
 
 /**
  * Red foreground colour.
@@ -145,8 +181,8 @@ export const black: CharacterOrnament = (text: string) =>
  *
  * @param text the input string
  */
-export const red: CharacterOrnament = (text: string) =>
-  hitchi({ on: 31, off: 39 })(text)
+export const red: CharacterOrnament = (...text) =>
+  hitchi({ on: 31, off: 39 })(...text)
 
 /**
  * Green foreground colour.
@@ -155,8 +191,8 @@ export const red: CharacterOrnament = (text: string) =>
  *
  * @param text the input string
  */
-export const green: CharacterOrnament = (text: string) =>
-  hitchi({ on: 32, off: 39 })(text)
+export const green: CharacterOrnament = (...text) =>
+  hitchi({ on: 32, off: 39 })(...text)
 
 /**
  * Yellow foreground colour.
@@ -165,8 +201,8 @@ export const green: CharacterOrnament = (text: string) =>
  *
  * @param text the input string
  */
-export const yellow: CharacterOrnament = (text: string) =>
-  hitchi({ on: 33, off: 39 })(text)
+export const yellow: CharacterOrnament = (...text) =>
+  hitchi({ on: 33, off: 39 })(...text)
 
 /**
  * Blue foreground colour.
@@ -175,8 +211,8 @@ export const yellow: CharacterOrnament = (text: string) =>
  *
  * @param text the input string
  */
-export const blue: CharacterOrnament = (text: string) =>
-  hitchi({ on: 34, off: 39 })(text)
+export const blue: CharacterOrnament = (...text) =>
+  hitchi({ on: 34, off: 39 })(...text)
 
 /**
  * Magenta foreground colour.
@@ -185,8 +221,8 @@ export const blue: CharacterOrnament = (text: string) =>
  *
  * @param text the input string
  */
-export const magenta: CharacterOrnament = (text: string) =>
-  hitchi({ on: 35, off: 39 })(text)
+export const magenta: CharacterOrnament = (...text) =>
+  hitchi({ on: 35, off: 39 })(...text)
 
 /**
  * Cyan foreground colour.
@@ -195,8 +231,8 @@ export const magenta: CharacterOrnament = (text: string) =>
  *
  * @param text the input string
  */
-export const cyan: CharacterOrnament = (text: string) =>
-  hitchi({ on: 36, off: 39 })(text)
+export const cyan: CharacterOrnament = (...text) =>
+  hitchi({ on: 36, off: 39 })(...text)
 
 /**
  * White foreground colour.
@@ -205,8 +241,8 @@ export const cyan: CharacterOrnament = (text: string) =>
  *
  * @param text the input string
  */
-export const white: CharacterOrnament = (text: string) =>
-  hitchi({ on: 37, off: 39 })(text)
+export const white: CharacterOrnament = (...text) =>
+  hitchi({ on: 37, off: 39 })(...text)
 
 /**
  * Gray (a.k.a. Bright Black) foreground colour.
@@ -215,8 +251,8 @@ export const white: CharacterOrnament = (text: string) =>
  *
  * @param text the input string
  */
-export const gray: CharacterOrnament = (text: string) =>
-  hitchi({ on: 90, off: 39 })(text)
+export const gray: CharacterOrnament = (...text) =>
+  hitchi({ on: 90, off: 39 })(...text)
 
 /**
  * Bright Red foreground colour.
@@ -225,8 +261,8 @@ export const gray: CharacterOrnament = (text: string) =>
  *
  * @param text the input string
  */
-export const brightRed: CharacterOrnament = (text: string) =>
-  hitchi({ on: 91, off: 39 })(text)
+export const brightRed: CharacterOrnament = (...text) =>
+  hitchi({ on: 91, off: 39 })(...text)
 
 /**
  * Bright Green foreground colour.
@@ -235,8 +271,8 @@ export const brightRed: CharacterOrnament = (text: string) =>
  *
  * @param text the input string
  */
-export const brightGreen: CharacterOrnament = (text: string) =>
-  hitchi({ on: 92, off: 39 })(text)
+export const brightGreen: CharacterOrnament = (...text) =>
+  hitchi({ on: 92, off: 39 })(...text)
 
 /**
  * Bright Yellow foreground colour.
@@ -245,8 +281,8 @@ export const brightGreen: CharacterOrnament = (text: string) =>
  *
  * @param text the input string
  */
-export const brightYellow: CharacterOrnament = (text: string) =>
-  hitchi({ on: 93, off: 39 })(text)
+export const brightYellow: CharacterOrnament = (...text) =>
+  hitchi({ on: 93, off: 39 })(...text)
 
 /**
  * Bright Blue foreground colour.
@@ -255,8 +291,8 @@ export const brightYellow: CharacterOrnament = (text: string) =>
  *
  * @param text the input string
  */
-export const brightBlue: CharacterOrnament = (text: string) =>
-  hitchi({ on: 94, off: 39 })(text)
+export const brightBlue: CharacterOrnament = (...text) =>
+  hitchi({ on: 94, off: 39 })(...text)
 
 /**
  * Bright Magenta foreground colour.
@@ -265,8 +301,8 @@ export const brightBlue: CharacterOrnament = (text: string) =>
  *
  * @param text the input string
  */
-export const brightMagenta: CharacterOrnament = (text: string) =>
-  hitchi({ on: 95, off: 39 })(text)
+export const brightMagenta: CharacterOrnament = (...text) =>
+  hitchi({ on: 95, off: 39 })(...text)
 
 /**
  * Bright Cyan foreground colour.
@@ -275,8 +311,8 @@ export const brightMagenta: CharacterOrnament = (text: string) =>
  *
  * @param text the input string
  */
-export const brightCyan: CharacterOrnament = (text: string) =>
-  hitchi({ on: 96, off: 39 })(text)
+export const brightCyan: CharacterOrnament = (...text) =>
+  hitchi({ on: 96, off: 39 })(...text)
 
 /**
  * Bright White foreground colour.
@@ -285,8 +321,8 @@ export const brightCyan: CharacterOrnament = (text: string) =>
  *
  * @param text the input string
  */
-export const brightWhite: CharacterOrnament = (text: string) =>
-  hitchi({ on: 97, off: 39 })(text)
+export const brightWhite: CharacterOrnament = (...text) =>
+  hitchi({ on: 97, off: 39 })(...text)
 
 /**
  * Black background colour.
@@ -295,8 +331,8 @@ export const brightWhite: CharacterOrnament = (text: string) =>
  *
  * @param text the input string
  */
-export const bgBlack: CharacterOrnament = (text: string) =>
-  hitchi({ on: 40, off: 49 })(text)
+export const bgBlack: CharacterOrnament = (...text) =>
+  hitchi({ on: 40, off: 49 })(...text)
 
 /**
  * Red background colour.
@@ -305,8 +341,8 @@ export const bgBlack: CharacterOrnament = (text: string) =>
  *
  * @param text the input string
  */
-export const bgRed: CharacterOrnament = (text: string) =>
-  hitchi({ on: 41, off: 49 })(text)
+export const bgRed: CharacterOrnament = (...text) =>
+  hitchi({ on: 41, off: 49 })(...text)
 
 /**
  * Green background colour.
@@ -315,8 +351,8 @@ export const bgRed: CharacterOrnament = (text: string) =>
  *
  * @param text the input string
  */
-export const bgGreen: CharacterOrnament = (text: string) =>
-  hitchi({ on: 42, off: 49 })(text)
+export const bgGreen: CharacterOrnament = (...text) =>
+  hitchi({ on: 42, off: 49 })(...text)
 
 /**
  * Yellow background colour.
@@ -325,8 +361,8 @@ export const bgGreen: CharacterOrnament = (text: string) =>
  *
  * @param text the input string
  */
-export const bgYellow: CharacterOrnament = (text: string) =>
-  hitchi({ on: 43, off: 49 })(text)
+export const bgYellow: CharacterOrnament = (...text) =>
+  hitchi({ on: 43, off: 49 })(...text)
 
 /**
  * Blue background colour.
@@ -335,8 +371,8 @@ export const bgYellow: CharacterOrnament = (text: string) =>
  *
  * @param text the input string
  */
-export const bgBlue: CharacterOrnament = (text: string) =>
-  hitchi({ on: 44, off: 49 })(text)
+export const bgBlue: CharacterOrnament = (...text) =>
+  hitchi({ on: 44, off: 49 })(...text)
 
 /**
  * Magenta background colour.
@@ -345,8 +381,8 @@ export const bgBlue: CharacterOrnament = (text: string) =>
  *
  * @param text the input string
  */
-export const bgMagenta: CharacterOrnament = (text: string) =>
-  hitchi({ on: 45, off: 49 })(text)
+export const bgMagenta: CharacterOrnament = (...text) =>
+  hitchi({ on: 45, off: 49 })(...text)
 
 /**
  * Cyan background colour.
@@ -355,8 +391,8 @@ export const bgMagenta: CharacterOrnament = (text: string) =>
  *
  * @param text the input string
  */
-export const bgCyan: CharacterOrnament = (text: string) =>
-  hitchi({ on: 46, off: 49 })(text)
+export const bgCyan: CharacterOrnament = (...text) =>
+  hitchi({ on: 46, off: 49 })(...text)
 
 /**
  * White background colour.
@@ -365,8 +401,8 @@ export const bgCyan: CharacterOrnament = (text: string) =>
  *
  * @param text the input string
  */
-export const bgWhite: CharacterOrnament = (text: string) =>
-  hitchi({ on: 47, off: 49 })(text)
+export const bgWhite: CharacterOrnament = (...text) =>
+  hitchi({ on: 47, off: 49 })(...text)
 
 /**
  * Black background colour.
@@ -375,8 +411,8 @@ export const bgWhite: CharacterOrnament = (text: string) =>
  *
  * @param text the input string
  */
-export const bgGray: CharacterOrnament = (text: string) =>
-  hitchi({ on: 100, off: 49 })(text)
+export const bgGray: CharacterOrnament = (...text) =>
+  hitchi({ on: 100, off: 49 })(...text)
 
 /**
  * Red background colour.
@@ -385,8 +421,8 @@ export const bgGray: CharacterOrnament = (text: string) =>
  *
  * @param text the input string
  */
-export const bgBrightRed: CharacterOrnament = (text: string) =>
-  hitchi({ on: 101, off: 49 })(text)
+export const bgBrightRed: CharacterOrnament = (...text) =>
+  hitchi({ on: 101, off: 49 })(...text)
 
 /**
  * Green background colour.
@@ -395,8 +431,8 @@ export const bgBrightRed: CharacterOrnament = (text: string) =>
  *
  * @param text the input string
  */
-export const bgBrightGreen: CharacterOrnament = (text: string) =>
-  hitchi({ on: 102, off: 49 })(text)
+export const bgBrightGreen: CharacterOrnament = (...text) =>
+  hitchi({ on: 102, off: 49 })(...text)
 
 /**
  * Yellow background colour.
@@ -405,8 +441,8 @@ export const bgBrightGreen: CharacterOrnament = (text: string) =>
  *
  * @param text the input string
  */
-export const bgBrightYellow: CharacterOrnament = (text: string) =>
-  hitchi({ on: 103, off: 49 })(text)
+export const bgBrightYellow: CharacterOrnament = (...text) =>
+  hitchi({ on: 103, off: 49 })(...text)
 
 /**
  * Blue background colour.
@@ -415,8 +451,8 @@ export const bgBrightYellow: CharacterOrnament = (text: string) =>
  *
  * @param text the input string
  */
-export const bgBrightBlue: CharacterOrnament = (text: string) =>
-  hitchi({ on: 104, off: 49 })(text)
+export const bgBrightBlue: CharacterOrnament = (...text) =>
+  hitchi({ on: 104, off: 49 })(...text)
 
 /**
  * Magenta background colour.
@@ -425,8 +461,8 @@ export const bgBrightBlue: CharacterOrnament = (text: string) =>
  *
  * @param text the input string
  */
-export const bgBrightMagenta: CharacterOrnament = (text: string) =>
-  hitchi({ on: 105, off: 49 })(text)
+export const bgBrightMagenta: CharacterOrnament = (...text) =>
+  hitchi({ on: 105, off: 49 })(...text)
 
 /**
  * Cyan background colour.
@@ -435,8 +471,8 @@ export const bgBrightMagenta: CharacterOrnament = (text: string) =>
  *
  * @param text the input string
  */
-export const bgBrightCyan: CharacterOrnament = (text: string) =>
-  hitchi({ on: 106, off: 49 })(text)
+export const bgBrightCyan: CharacterOrnament = (...text) =>
+  hitchi({ on: 106, off: 49 })(...text)
 
 /**
  * White background colour.
@@ -445,8 +481,8 @@ export const bgBrightCyan: CharacterOrnament = (text: string) =>
  *
  * @param text the input string
  */
-export const bgBrightWhite: CharacterOrnament = (text: string) =>
-  hitchi({ on: 107, off: 49 })(text)
+export const bgBrightWhite: CharacterOrnament = (...text) =>
+  hitchi({ on: 107, off: 49 })(...text)
 
 /** @constant resetCode 	All attributes off*/
 export const resetCode: OrnamentCode = 0
