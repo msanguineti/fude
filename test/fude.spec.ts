@@ -1,128 +1,234 @@
 import * as fude from '../src'
 
+const showMe = (text: string) => {
+  if (process.env.FUDE_CHECK_VISUALLY) return console.log(text)
+}
+
 beforeEach(() => {
-  process.env.FORCE_COLOURS = '1'
+  //ensure outputting codes in case test is done in a non-TTY env... think CI/CD
+  process.env.FORCE_COLORS = 'on'
 })
 
 describe('core functionalities', () => {
   test('single ornament', () => {
-    const output = { text: fude.fude('bar', fude.red) }
-    expect(output).toMatchSnapshot({
-      text: expect.stringContaining('\x1b[31mbar\x1b[39m'),
-    })
+    const output = fude.fude('red', fude.red)
+    showMe(output)
+
+    expect(output).toMatchSnapshot()
   })
 
-  test('two ornaments', () => {
-    const output = { text: fude.fude('bar', fude.red, fude.bold) }
-    expect(output).toMatchSnapshot({
-      text: expect.stringContaining('\x1b[31m\x1b[1mbar\x1b[22m\x1b[39m'),
-    })
+  test('two ornaments together', () => {
+    const output = fude.fude('bold red', fude.red, fude.bold)
+    showMe(output)
+
+    expect(output).toMatchSnapshot()
+  })
+
+  test('ornaments string + string', () => {
+    const output =
+      fude.fude("i'm bold", fude.bold) + ' ' + fude.fude("i'm red", fude.red)
+    showMe(output)
+
+    expect(output).toMatchSnapshot()
+  })
+
+  test('ornaments template strings', () => {
+    const output = `${fude.fude('The', fude.dim)} ${fude.fude(
+      'leaning',
+      fude.italic,
+      fude.green
+    )} ${fude.fude('tower', fude.white)} ${fude.fude(
+      'of',
+      fude.dim
+    )} ${fude.fude('Pisa', fude.red, fude.blinkSlow)}`
+    showMe(output)
+
+    expect(output).toMatchSnapshot()
   })
 
   test('colours are switched off', () => {
-    process.env.FORCE_COLOURS = '0'
-    const output = { text: fude.fude('bar', fude.red) }
-    expect(output).toMatchSnapshot({ text: expect.stringMatching('bar') })
+    process.env.FORCE_COLORS = 'off'
+    const output = fude.fude("this text shouldn't be red", fude.red)
+    showMe(output)
+
+    expect(output).toMatchSnapshot()
   })
 })
 
 describe('ornaments', () => {
   test('modifiers', () => {
-    const output = {
-      text: fude.reset(
-        `reset ${fude.bold('bold')} ${fude.dim('dim')} ${fude.italic(
-          'italic'
-        )} ${fude.underline('underline')} ${fude.doublyUnderline(
-          'doublyUnderline'
-        )} ${fude.blinkSlow('slow')} ${fude.blinkFast('fast')} ${fude.invert(
-          'invert'
-        )} ${fude.hide('hide')} ${fude.strikethrough('strikethrough')}`
-      ),
-    }
-    expect(output).toMatchSnapshot({
-      text: expect.stringContaining(
-        '\x1b[0mreset \x1b[1mbold\x1b[22m \x1b[2mdim\x1b[22m \x1b[3mitalic\x1b[23m \x1b[4munderline\x1b[24m \x1b[21mdoublyUnderline\x1b[24m \x1b[5mslow\x1b[25m \x1b[6mfast\x1b[26m \x1b[7minvert\x1b[27m \x1b[8mhide\x1b[28m \x1b[9mstrikethrough\x1b[29m\x1b[0m'
-      ),
-    })
+    const output = `${fude.reset('reset')} ${fude.bold('bold')} ${fude.dim(
+      'dim'
+    )} ${fude.italic('italic')} ${fude.underline(
+      'underline'
+    )} ${fude.doublyUnderline('doublyUnderline')} ${fude.blinkSlow(
+      'slow'
+    )} ${fude.blinkFast('fast')} ${fude.invert('invert')} ${fude.hide(
+      'hide'
+    )} ${fude.strikethrough('strikethrough')}`
+    showMe(output)
+
+    expect(output).toMatchSnapshot()
   })
 
   test('foreground colours', () => {
-    const output = {
-      text: fude.black(
-        `black ${fude.red('red')} ${fude.green('green')} ${fude.yellow(
-          'yellow'
-        )} ${fude.blue('blue')} ${fude.magenta('magenta')} ${fude.cyan(
-          'cyan'
-        )} ${fude.white('white')} ${fude.gray('gray')}`
-      ),
-    }
-    expect(output).toMatchSnapshot({
-      text: expect.stringContaining(
-        '\x1b[30mblack \x1b[31mred\x1b[39m \x1b[32mgreen\x1b[39m \x1b[33myellow\x1b[39m \x1b[34mblue\x1b[39m \x1b[35mmagenta\x1b[39m \x1b[36mcyan\x1b[39m \x1b[37mwhite\x1b[39m \x1b[90mgray\x1b[39m\x1b[39'
-      ),
-    })
+    const output = `${fude.black('black')} ${fude.red('red')} ${fude.green(
+      'green'
+    )} ${fude.yellow('yellow')} ${fude.blue('blue')} ${fude.magenta(
+      'magenta'
+    )} ${fude.cyan('cyan')} ${fude.white('white')} ${fude.gray('gray')}`
+    showMe(output)
+
+    expect(output).toMatchSnapshot()
   })
 
   test('background colours', () => {
-    const output = {
-      text: fude.bgBlack(
-        `black ${fude.bgRed('red')} ${fude.bgGreen('green')} ${fude.bgYellow(
-          'yellow'
-        )} ${fude.bgBlue('blue')} ${fude.bgMagenta('magenta')} ${fude.bgCyan(
-          'cyan'
-        )} ${fude.bgWhite('white')} ${fude.bgGray('gray')}`
-      ),
-    }
-    expect(output).toMatchSnapshot(
-      '\x1b[40mblack \x1b[41mred\x1b[49m \x1b[42mgreen\x1b[49m \x1b[43myellow\x1b[49m \x1b[44mblue\x1b[49m \x1b[45mmagenta\x1b[49m \x1b[46mcyan\x1b[49m \x1b[47mwhite\x1b[49m \x1b[100mgray\x1b[49m\x1b[49m'
-    )
+    const output = `${fude.bgBlack('black')} ${fude.bgRed(
+      'red'
+    )} ${fude.bgGreen('green')} ${fude.bgYellow('yellow')} ${fude.bgBlue(
+      'blue'
+    )} ${fude.bgMagenta('magenta')} ${fude.bgCyan('cyan')} ${fude.bgWhite(
+      'white'
+    )} ${fude.bgGray('gray')}`
+    showMe(output)
+
+    expect(output).toMatchSnapshot()
   })
 
   test('bright foreground colours', () => {
-    const output = {
-      text: fude.gray(
-        `gray ${fude.brightRed('red')} ${fude.brightGreen(
-          'green'
-        )} ${fude.brightYellow('yellow')} ${fude.brightBlue(
-          'blue'
-        )} ${fude.brightMagenta('magenta')} ${fude.brightCyan(
-          'cyan'
-        )} ${fude.brightWhite('white')}`
-      ),
-    }
-    expect(output).toMatchSnapshot(
-      '\x1b[90mblack \x1b[91mred\x1b[39m \x1b[92mgreen\x1b[39m \x1b[93myellow\x1b[39m \x1b[94mblue\x1b[39m \x1b[95mmagenta\x1b[39m \x1b[96mcyan\x1b[39m \x1b[97mwhite\x1b[39m\x1b[39m'
-    )
+    const output = `${fude.gray('gray')} ${fude.brightRed(
+      'red'
+    )} ${fude.brightGreen('green')} ${fude.brightYellow(
+      'yellow'
+    )} ${fude.brightBlue('blue')} ${fude.brightMagenta(
+      'magenta'
+    )} ${fude.brightCyan('cyan')} ${fude.brightWhite('white')}`
+    showMe(output)
+
+    expect(output).toMatchSnapshot()
   })
 
   test('bright background colours', () => {
-    const output = {
-      text: fude.bgGray(
-        `gray ${fude.bgBrightRed('red')} ${fude.bgBrightGreen(
-          'green'
-        )} ${fude.bgBrightYellow('yellow')} ${fude.bgBrightBlue(
-          'blue'
-        )} ${fude.bgBrightMagenta('magenta')} ${fude.bgBrightCyan(
-          'cyan'
-        )} ${fude.bgBrightWhite('white')} `
-      ),
-    }
-    expect(output).toMatchSnapshot(
-      '\x1b[100mblack \x1b[101mred\x1b[49m \x1b[102mgreen\x1b[49m \x1b[103myellow\x1b[49m \x1b[104mblue\x1b[49m \x1b[105mmagenta\x1b[49m \x1b[106mcyan\x1b[49m \x1b[107mwhite\x1b[49m\x1b[49m'
-    )
+    const output = `${fude.bgGray('gray')} ${fude.bgBrightRed(
+      'red'
+    )} ${fude.bgBrightGreen('green')} ${fude.bgBrightYellow(
+      'yellow'
+    )} ${fude.bgBrightBlue('blue')} ${fude.bgBrightMagenta(
+      'magenta'
+    )} ${fude.bgBrightCyan('cyan')} ${fude.bgBrightWhite('white')}`
+    showMe(output)
+
+    expect(output).toMatchSnapshot()
   })
 
   test('using codes', () => {
-    const output = { text: fude.fudeCodes('foo', fude.yellowCode) }
-    expect(output).toMatchSnapshot({
-      text: expect.stringContaining('\x1b[33mfoo\x1b[0m'),
-    })
+    const output = fude.fudeCodes(
+      'black on bright red background',
+      fude.brightRedBgCode,
+      fude.blackCode
+    )
+    showMe(output)
+
+    expect(output).toMatchSnapshot()
   })
 })
 
-describe('util', () => {
-  test('all the codes', () => {
-    const output = { text: fude.availableOrnamentCodes() }
+describe('template literals', () => {
+  test('simple', () => {
+    const output = fude.bgCyan`background is cyan`
+    showMe(output)
+
     expect(output).toMatchSnapshot()
+  })
+
+  test('nested', () => {
+    const output = fude.bgGray`${fude.black`background is gray, text is black with bold and white exclamation mark${fude.bold`${fude.white`!`}`}`}`
+    showMe(output)
+
+    expect(output).toMatchSnapshot()
+  })
+
+  // const result = `"[41mbgRed[43mbgYellow[49m[41mbgRed[49m"`
+
+  test('using only template literals', () => {
+    const output = fude.bgRed`bgRed${
+      fude.bgYellow`bgYellow` + fude.bgGreen`bgGreen`
+    }bgRed`
+    showMe(output)
+
+    expect(output).toMatchInlineSnapshot(`"[41mbgRed[43mbgYellow[49m[41m[42mbgGreen[49m[41mbgRed[49m"`)
+  })
+
+  test('mixing template literals with functions', () => {
+    const output = fude.bgRed`bgRed${
+      fude.bgYellow('bgYellow') + fude.bgGreen('bgGreen')
+    }bgRed`
+    showMe(output)
+
+    expect(output).toMatchInlineSnapshot(`"[41mbgRed[43mbgYellow[49m[41m[42mbgGreen[49m[41mbgRed[49m"`)
+  })
+
+  test('mixing functions with template literals', () => {
+    const output = fude.bgRed(
+      `bgRed${fude.bgYellow`bgYellow${fude.bgGreen('bgGreen')}`}` + 'bgRed'
+    )
+    showMe(output)
+
+    expect(output).toMatchInlineSnapshot(`"[41mbgRed[43mbgYellow[42mbgGreen[49m[41m[43m[49m[41mbgRed[49m"`)
+  })
+})
+
+describe('utils', () => {
+  test('TTY capability', () => {
+    const output = fude.availableOrnamentCodes()
+    showMe(output)
+
+    expect(output).toMatchSnapshot()
+  })
+})
+
+describe('misc', () => {
+  test('simulate headless for full coverage', () => {
+    delete process.env.FORCE_COLORS
+    const output = fude.fude("it isn't going to fail in ci", fude.red)
+    showMe(output)
+
+    if (!process.stdout.isTTY)
+      expect(output).toMatch("it isn't going to fail in ci")
+    else expect(output).toMatch("[31mit isn't going to fail in ci[39m")
+  })
+})
+
+describe('readme', () => {
+  test('logos', () => {
+    const output1 =
+      fude.fude('筆', fude.bgRed, fude.white) +
+      fude.fude(' fude ', fude.bgWhite, fude.black)
+
+    // alternatively...
+
+    const output2 =
+      fude.bgRed(fude.white`筆`) + fude.bgWhite(fude.black` fude `)
+
+    // template literals
+
+    const output3 =
+      fude.bgRed`${fude.white`筆`}` + fude.bgWhite`${fude.black` fude `}`
+
+    expect(output1).toMatchInlineSnapshot(`"[41m[37m筆[39m[49m[47m[30m fude [39m[49m"`)
+    expect(output1).toMatch(output2)
+    expect(output3).toMatch(output1)
+
+    // or nested (same result, slightly different intentions with the backgrounds)...
+
+    const output4 = fude.bgRed(
+      fude.white('筆') + fude.bgWhite(` ${fude.black('fude')} `)
+    )
+
+    // template literals (also nested)...
+
+    const output5 = fude.bgRed`${fude.white`筆`}${fude.bgWhite` ${fude.black`fude`} `}`
+
+    expect(output4).toMatch(output5)
   })
 })
