@@ -18,7 +18,8 @@
 - 100% tree-shakeable by design
 - Template literals friendly
 - Font modifiers
-- ![ornaments](media/text_ornaments.gif)
+
+![ornaments](media/text_ornaments.gif)
 
 - Foreground colours (normal & bright)
 
