@@ -1,6 +1,6 @@
 {
   "name": "fude",
-  "version": "0.6.1",
+  "version": "0.6.2",
   "description": "Node.js library for terminal text style formatting",
   "main": "lib/index.js",
   "module": "lib/index.mjs",
