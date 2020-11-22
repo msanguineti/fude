@@ -34,7 +34,18 @@
 - [Install](#install)
 - [Usage](#usage)
   - [TTY capabilities](#tty-capabilities)
-  - [TypeScript](#typescript)
+- [API](#api)
+  - [`fude(string, ...<ornament>)`](#fudestring-ornament)
+  - [`fude.<ornament>(string|<ornament>())`](#fudeornamentstringornament)
+  - [Tagged template literals](#tagged-template-literals)
+- [Ornaments](#ornaments)
+  - [Note on terminal capabilities](#note-on-terminal-capabilities)
+  - [Modifiers](#modifiers)
+  - [Foreground Colours](#foreground-colours)
+  - [Background Colours](#background-colours)
+- [ANSI Codes](#ansi-codes)
+  - [fude.ansi(string, ...number)](#fudeansistring-number)
+- [TypeScript](#typescript)
 - [Status](#status)
   - [TODO](#todo)
 - [What's in a name?](#whats-in-a-name)
@@ -77,12 +88,119 @@ console.log(bgRed`${white`筆`}${bgWhite` ${black`fude`} `}`)
 To check what your TTY is capable of, call this handy function:
 
 ```js
-import { availableOrnamentCodes } from 'fude'
+import { ttyCapability } from 'fude'
 
-console.log(availableOrnamentCodes())
+console.log(ttyCapability())
 ```
 
-### TypeScript
+## API
+
+### `fude(string, ...<ornament>)`
+
+Example:
+
+```js
+let output = fude('red text on white background', red, bgWhite)
+```
+
+### `fude.<ornament>(string|<ornament>())`
+
+Example:
+
+```js
+let output = bgWhite(red('red text on white background'))
+```
+
+### Tagged template literals
+
+Example:
+
+```js
+let output1 = `${red`red text`} and ${bgWhite`${blue`blue text on white background`}`}`
+
+let output2 =
+  `${red`red text`}` +
+  ' and ' +
+  `${bgWhite(blue`blue text on white background`)}`
+
+// output1 === output2
+```
+
+## Ornaments
+
+Character ornaments applicable to text.
+
+### Note on terminal capabilities
+
+- Exact colours values are dependant on the terminal implementation.
+
+- Not all modifiers are available on every terminal.
+
+(check your [terminal capabilities](#tty-capabilities))
+
+### Modifiers
+
+`bold`
+
+`dim`
+
+`italic`
+
+`underline`
+
+`doublyUnderline`
+
+`blinkSlow`
+
+`blinkFast`
+
+`invert`
+
+`hide`
+
+`strikethrough`
+
+### Foreground Colours
+
+| Normal    | Bright          |
+| --------- | --------------- |
+| `black`   | `gray`          |
+| `red`     | `brightRed`     |
+| `green`   | `brightGreen`   |
+| `yellow`  | `brightYellow`  |
+| `blue`    | `brightBlue`    |
+| `magenta` | `brightMagenta` |
+| `cyan`    | `brightCyan`    |
+| `white`   | `brightWhite`   |
+
+### Background Colours
+
+| Normal      | Bright            |
+| ----------- | ----------------- |
+| `bgBlack`   | `bgGray`          |
+| `bgRed`     | `bgBrightRed`     |
+| `bgGreen`   | `bgBrightGreen`   |
+| `bgYellow`  | `bgBrightYellow`  |
+| `bgBlue`    | `bgBrightBlue`    |
+| `bgMagenta` | `bgBrightMagenta` |
+| `bgCyan`    | `bgBrightCyan`    |
+| `bgWhite`   | `bgBrightWhite`   |
+
+## ANSI Codes
+
+It is possible to call directly the ANSI code number:
+
+### fude.ansi(string, ...number)
+
+Example: `ansi('This text is black on green background', 42, 30)`
+
+As a convenience, it is possible to use [ornaments](#ornaments) by appending `Code` to their name:
+
+```js
+fude.ansi('This text is black on green background', bgGreenCode, blackCode)
+```
+
+## TypeScript
 
 TypeScript types are included.
 

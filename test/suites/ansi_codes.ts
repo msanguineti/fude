@@ -1,10 +1,11 @@
 import * as fude from '../../src'
+
 import { showMe } from './showMe'
 
 export const codes = (): void =>
   describe('ANSI Codes', () => {
     test('TTY capability', () => {
-      const output = fude.availableOrnamentCodes()
+      const output = fude.ttyCapability()
       showMe(output)
 
       expect(output).toMatchInlineSnapshot(`
@@ -23,13 +24,13 @@ export const codes = (): void =>
     })
 
     test('using codes', () => {
-      const output = fude.fudeCodes(
+      const output = fude.ansi(
         'black on bright red background',
-        fude.brightRedBgCode,
+        fude.bgBrightRedCode,
         fude.blackCode
       )
       showMe(output)
 
-      expect(output).toMatchInlineSnapshot(`"[30m[101mblack on bright red background[0m[30m[0m"`)
+      expect(output).toMatchInlineSnapshot(`"[101;30mblack on bright red background[0m"`)
     })
   })
