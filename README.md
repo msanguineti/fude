@@ -13,6 +13,8 @@
 ![Node.js CI](https://github.com/msanguineti/fude/workflows/Node.js%20CI/badge.svg)
 ![CodeQL](https://github.com/msanguineti/fude/workflows/CodeQL/badge.svg)
 
+## Features <!-- omit in toc -->
+
 - Fast loading, fast performing
 - ANSI Codes complete
 - 100% tree-shakeable by design
@@ -21,13 +23,13 @@
 
 ![ornaments](media/text_ornaments.gif)
 
-- Foreground colours (normal & bright)
+- Foreground colors (normal & bright)
 
-![fg_colours](media/foreground_colours.png)
+![fg_colors](media/foreground_colors.png)
 
-- Background colours (normal & bright)
+- Background colors (normal & bright)
 
-![bg_colours](media/background_colours.png)
+![bg_colors](media/background_colors.png)
 
 ## Table of contents <!-- omit in toc -->
 
@@ -40,14 +42,13 @@
   - [Tagged template literals](#tagged-template-literals)
 - [Ornaments](#ornaments)
   - [Note on terminal capabilities](#note-on-terminal-capabilities)
-  - [Modifiers](#modifiers)
-  - [Foreground Colours](#foreground-colours)
-  - [Background Colours](#background-colours)
 - [ANSI Codes](#ansi-codes)
-  - [fude.ansi(string, ...number)](#fudeansistring-number)
+  - [`fude.ansi(string, ...number)`](#fudeansistring-number)
 - [TypeScript](#typescript)
-- [Status](#status)
-  - [TODO](#todo)
+- [Who's comparing?](#whos-comparing)
+  - [Output](#output)
+  - [Library loading time](#library-loading-time)
+  - [Template literals handling](#template-literals-handling)
 - [What's in a name?](#whats-in-a-name)
 - [Changelog](#changelog)
 - [Contributing](#contributing)
@@ -128,69 +129,38 @@ let output2 =
 
 ## Ornaments
 
-Character ornaments applicable to text.
+Character ornaments (styles) applicable to text.
+
+- Modifiers
+- Foreground Colors
+- Background Colors
+
+| Modifiers         | Fg colors (normal) | Fg colors (bright) | Bg colors (normal) | Bg colors (bright) |
+| ----------------- | ------------------ | ------------------ | ------------------ | ------------------ |
+| `bold`            | `black`            | `gray`             | `bgBlack`          | `bgGray`           |
+| `dim`             | `red`              | `brightRed`        | `bgRed`            | `bgBrightRed`      |
+| `italic`          | `green`            | `brightGreen`      | `bgGreen`          | `bgBrightGreen`    |
+| `underline`       | `yellow`           | `brightYellow`     | `bgYellow`         | `bgBrightYellow`   |
+| `doublyUnderline` | `blue`             | `brightBlue`       | `bgBlue`           | `bgBrightBlue`     |
+| `blinkSlow`       | `magenta`          | `brightMagenta`    | `bgMagenta`        | `bgBrightMagenta`  |
+| `blinkFast`       | `cyan`             | `brightCyan`       | `bgCyan`           | `bgBrightCyan`     |
+| `inverse`         | `white`            | `brightWhite`      | `bgWhite`          | `bgBrightWhite`    |
+| `hide`            |                    |                    |                    |                    |
+| `strikethrough`   |                    |                    |                    |                    |
 
 ### Note on terminal capabilities
 
-- Exact colours values are dependant on the terminal implementation.
+1. Exact colors values are dependant on the terminal implementation.
 
-- Not all modifiers are available on every terminal.
+2. Not all modifiers are available on every terminal.
 
 (check your [terminal capabilities](#tty-capabilities))
 
-### Modifiers
-
-`bold`
-
-`dim`
-
-`italic`
-
-`underline`
-
-`doublyUnderline`
-
-`blinkSlow`
-
-`blinkFast`
-
-`invert`
-
-`hide`
-
-`strikethrough`
-
-### Foreground Colours
-
-| Normal    | Bright          |
-| --------- | --------------- |
-| `black`   | `gray`          |
-| `red`     | `brightRed`     |
-| `green`   | `brightGreen`   |
-| `yellow`  | `brightYellow`  |
-| `blue`    | `brightBlue`    |
-| `magenta` | `brightMagenta` |
-| `cyan`    | `brightCyan`    |
-| `white`   | `brightWhite`   |
-
-### Background Colours
-
-| Normal      | Bright            |
-| ----------- | ----------------- |
-| `bgBlack`   | `bgGray`          |
-| `bgRed`     | `bgBrightRed`     |
-| `bgGreen`   | `bgBrightGreen`   |
-| `bgYellow`  | `bgBrightYellow`  |
-| `bgBlue`    | `bgBrightBlue`    |
-| `bgMagenta` | `bgBrightMagenta` |
-| `bgCyan`    | `bgBrightCyan`    |
-| `bgWhite`   | `bgBrightWhite`   |
-
 ## ANSI Codes
 
-It is possible to call directly the ANSI code number:
+It is possible to call directly the [ANSI code](https://en.wikipedia.org/wiki/ANSI_escape_code#SGR_parameters) number:
 
-### fude.ansi(string, ...number)
+### `fude.ansi(string, ...number)`
 
 Example: `ansi('This text is black on green background', 42, 30)`
 
@@ -204,24 +174,67 @@ fude.ansi('This text is black on green background', bgGreenCode, blackCode)
 
 TypeScript types are included.
 
-## Status
+## Who's comparing?
 
-This project has just started. I want to put it out there, but there are few things I want to add and few things I need to refactor a bit. Nonetheless, this library is very much usable as it is right now.
+Let's compare `fude` with some other libraries:
 
-### TODO
+- [`chalk`](https://npmjs.com/chalk)
+- [`kleur`](https://npmjs.com/kleur)
+- [`colorette`](https://npmjs.com/colorette)
+- [`ansi-colors`](https://npmjs.com/ansi-colors)
+- [`colors`](https://npmjs.com/colors)
 
-- [ ] Better documentation
-- [ ] Add a couple of cool features ✨
-- [ ] Add some benchmark to show that this lib is the bestest :unicorn:
-- [ ] Revise code comments
-- [ ] ???
-- [ ] Profit
+... what to compare?
+
+- [Output rendering](#output) - how fast is `fude`?
+- [Load times](#library-loading-time) - how fast `fude` loads (`require('fude')`)?
+- [Template literals handling](#template-literals-handling) - how template literals are handled?
+
+### Output
+
+`fude` is fast.
+
+| name        | ops    | margin | percentSlower |
+| ----------- | ------ | ------ | ------------- |
+| fude        | 604509 | 0.24   | 0             |
+| chalk       | 424405 | 0.26   | 29.79         |
+| kleur       | 427387 | 0.68   | 29.3          |
+| colors      | 226040 | 0.26   | 62.61         |
+| colorette   | 573854 | 0.31   | 5.07          |
+| ansi-colors | 266812 | 1.46   | 55.86         |
+
+![rendering](media/rendering.png)
+
+### Library loading time
+
+Let's load a library 1000 times and see what's the average loading time:
+
+| library     | average time |
+| ----------- | ------------ |
+| fude        | 0.563ms      |
+| chalk       | 1.969ms      |
+| kleur       | 0.328ms      |
+| colors      | 4.554ms      |
+| colorette   | 0.352ms      |
+| ansi-colors | 0.970ms      |
+
+Well, `colorette` and `kleur` are fast... but the libraries are smaller than the rest as well.
+
+### Template literals handling
+
+```js
+bgRed`${white`筆`}` + bgWhite` ${black`fude`} `
+```
+
+Only `fude` and `chalk` are correctly handling template literals (as of November 2020)
+
+![template handling](media/template_literals.png)
 
 ## What's in a name?
 
 [**Fude**](https://en.wikipedia.org/wiki/Ink_brush) (筆 - Japanese pronunciation: [[ɸɯ̟ᵝde̞](https://en.wikipedia.org/wiki/Help:IPA/Japanese)] foo-de -- **de** as in **de**ntist) is Japanese for a calligraphy brush. Since there isn't really a plural form in Japanese, in this case 'fude' can be interpreted as 'brushes'.
 
-The idea is that you use a different brush for a different style of stroke (or colour). Here you have different font styles and foreground/background colours.
+The idea is that you use a different brush for a different style of stroke (or color). Here you have different font styles and foreground/background colors.
 
 ```js
 fude('筆', bgRed, white)
