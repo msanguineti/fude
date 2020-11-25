@@ -19,12 +19,9 @@ export type CharacterOrnament = (
 const { FORCE_COLOR, NODE_DISABLE_COLORS, NO_COLOR, TERM } = process.env
 const isTTY = process.stdout && process.stdout.isTTY
 
-let enabled =
-  !NODE_DISABLE_COLORS &&
-  NO_COLOR == null &&
-  TERM !== 'dumb' &&
-  (FORCE_COLOR == null || !/^\s*(?:false|0|off)\s*$/i.test(FORCE_COLOR)) &&
-  isTTY
+let enabled = FORCE_COLOR
+  ? !/^\s*(?:false|0|off)\s*$/i.test(FORCE_COLOR)
+  : !NODE_DISABLE_COLORS && NO_COLOR == null && TERM !== 'dumb' && isTTY
 
 export const setEnabled = (colorsEnabled: boolean): void => {
   enabled = colorsEnabled
