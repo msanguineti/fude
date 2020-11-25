@@ -5,17 +5,26 @@
   "main": "lib/index.js",
   "module": "lib/index.mjs",
   "types": "lib/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./lib/index.mjs",
+      "require": "./lib/index.js"
+    }
+  },
   "files": [
     "lib"
   ],
   "scripts": {
-    "prebuild": "rimraf lib",
+    "clean": "rimraf lib  core ornaments codes index.{js,mjs,d.ts} codes.{js,mjs,d.ts}",
+    "prebuild": "npm run clean",
     "build": "rollup -c",
     "pretest": "npm run lint",
     "test": "jest",
     "posttest": "npm run format",
     "format": "prettier --loglevel warn --write .",
-    "lint": "eslint . --cache --fix --ext .ts,.tsx"
+    "lint": "eslint . --cache --fix --ext .ts,.tsx",
+    "prepublishOnly": "npm t && npm run build",
+    "benchmark": "npm t && npm run build && npm i . -C benchmark && node benchmark/index.js"
   },
   "keywords": [
     "color",
@@ -76,6 +85,5 @@
   "bugs": {
     "url": "https://github.com/msanguineti/fude/issues"
   },
-  "homepage": "https://github.com/msanguineti/fude#readme",
-  "dependencies": {}
+  "homepage": "https://github.com/msanguineti/fude#readme"
 }

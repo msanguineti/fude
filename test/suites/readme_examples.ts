@@ -2,6 +2,11 @@ import * as fude from '../../src'
 
 export const readmeExamples = (): void =>
   describe('readme', () => {
+    beforeAll(() => {
+      // CI/CD need this
+      fude.setEnabled(true)
+    })
+
     test('usage examples', () => {
       const ex1 =
         fude.fude('筆', fude.bgRed, fude.white) +

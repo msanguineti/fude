@@ -3,6 +3,11 @@ import { showMe } from './showMe'
 
 export const core = (): void =>
   describe('core functionalities', () => {
+    beforeAll(() => {
+      // CI/CD need this
+      fude.setEnabled(true)
+    })
+
     test('single ornament', () => {
       const output = fude.fude('red', fude.red)
       showMe(output)
@@ -39,11 +44,16 @@ export const core = (): void =>
       expect(output).toMatchInlineSnapshot(`"[2mThe[22m [3m[32mleaning[39m[23m [37mtower[39m [2mof[22m [31m[5mPisa[25m[39m"`)
     })
 
-    test('colours are switched off', () => {
-      process.env.FORCE_COLORS = 'off'
-      const output = fude.fude("this text shouldn't be red", fude.red)
-      showMe(output)
-
-      expect(output).toMatchInlineSnapshot(`"this text shouldn't be red"`)
+    test('enabled toggle', () => {
+      const colors = fude.isEnabled()
+      fude.setEnabled(false)
+      const off = fude.fude("this text shouldn't be red", fude.red)
+      expect(off).toMatchInlineSnapshot(`"this text shouldn't be red"`)
+      showMe(off)
+      fude.setEnabled(true)
+      const on = fude.fude('this text should be red', fude.red)
+      expect(on).toMatchInlineSnapshot(`"[31mthis text should be red[39m"`)
+      showMe(on)
+      fude.setEnabled(colors)
     })
   })

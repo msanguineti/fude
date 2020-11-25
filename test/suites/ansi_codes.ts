@@ -1,11 +1,17 @@
+import * as codes from '../../src/codes'
 import * as fude from '../../src'
 
 import { showMe } from './showMe'
 
-export const codes = (): void =>
+export const ansi_codes = (): void =>
   describe('ANSI Codes', () => {
+    beforeAll(() => {
+      // CI/CD need this
+      fude.setEnabled(true)
+    })
+
     test('TTY capability', () => {
-      const output = fude.ttyCapability()
+      const output = codes.ttyCapability()
       showMe(output)
 
       expect(output).toMatchInlineSnapshot(`
@@ -24,10 +30,10 @@ export const codes = (): void =>
     })
 
     test('using codes', () => {
-      const output = fude.ansi(
+      const output = codes.ansi(
         'black on bright red background',
-        fude.bgBrightRedCode,
-        fude.blackCode
+        codes.bgBrightRedCode,
+        codes.blackCode
       )
       showMe(output)
 

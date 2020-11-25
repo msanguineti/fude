@@ -1,4 +1,4 @@
-import { CharacterOrnament } from '../ornaments'
+import { CharacterOrnament } from './ornaments'
 
 /**
  * 書く - composes the various text ornaments to obtain the final output string

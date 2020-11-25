@@ -9,10 +9,10 @@ export type OrnamentCode = number
 /** @constant reset 	All attributes off*/
 export const resetCode: OrnamentCode = 0
 
-/** @constant bold  	As with faint/dim, the colour change is a PC (SCO / CGA) invention.*/
+/** @constant bold  	As with faint/dim, the color change is a PC (SCO / CGA) invention.*/
 export const boldCode: OrnamentCode = 1
 
-/** @constant dim  (with a saturated colour). May be implemented as a light font weight like bold.*/
+/** @constant dim  (with a saturated color). May be implemented as a light font weight like bold.*/
 export const dimCode: OrnamentCode = 2
 
 /** @constant italic 	Not widely supported. Sometimes treated as inverse or blink.*/
@@ -27,7 +27,7 @@ export const blinkSlowCode: OrnamentCode = 5
 /** @constant blinkRapid 	MS-DOS ANSI.SYS, 150+ per minute; not widely supported*/
 export const blinkRapidCode: OrnamentCode = 6
 
-/** @constant inverse 	swap foreground and background colours, aka invert; inconsistent emulation*/
+/** @constant inverse 	swap foreground and background colors, aka invert; inconsistent emulation*/
 export const inverseCode: OrnamentCode = 7
 
 /** @constant hide  not widely supported.*/
@@ -40,31 +40,31 @@ export const strikethroughCode: OrnamentCode = 9
 export const defaultFontCode: OrnamentCode = 10
 
 /** @constant altFont1Code: Alternative font */
-export const altFont1CodeCode: OrnamentCode = 11
+export const altFont1Code: OrnamentCode = 11
 
 /** @constant altFont2Code: Alternative font */
-export const altFont2CodeCode: OrnamentCode = 12
+export const altFont2Code: OrnamentCode = 12
 
 /** @constant altFont3Code: Alternative font */
-export const altFont3CodeCode: OrnamentCode = 13
+export const altFont3Code: OrnamentCode = 13
 
 /** @constant altFont4Code: Alternative font */
-export const altFont4CodeCode: OrnamentCode = 14
+export const altFont4Code: OrnamentCode = 14
 
 /** @constant altFont5Code: Alternative font */
-export const altFont5CodeCode: OrnamentCode = 15
+export const altFont5Code: OrnamentCode = 15
 
 /** @constant altFont6Code: Alternative font */
-export const altFont6CodeCode: OrnamentCode = 16
+export const altFont6Code: OrnamentCode = 16
 
 /** @constant altFont7Code: Alternative font */
-export const altFont7CodeCode: OrnamentCode = 17
+export const altFont7Code: OrnamentCode = 17
 
 /** @constant altFont8Code: Alternative font */
-export const altFont8CodeCode: OrnamentCode = 18
+export const altFont8Code: OrnamentCode = 18
 
 /** @constant altFont9Code: Alternative font */
-export const altFont9CodeCode: OrnamentCode = 19
+export const altFont9Code: OrnamentCode = 19
 
 /** @constant fraktur  Rarely supported*/
 export const frakturCode: OrnamentCode = 20
@@ -72,7 +72,7 @@ export const frakturCode: OrnamentCode = 20
 /** @constant doublyUnderline  Doubly underline or Bold off 	Double-underline per ECMA-48.:8.3.117 See discussion*/
 export const doublyUnderlineCode: OrnamentCode = 21
 
-/** @constant normalColor  Normal colour or intensity 	Neither bold nor faint/dim*/
+/** @constant normalColor  Normal color or intensity 	Neither bold nor faint/dim*/
 export const normalColorCode: OrnamentCode = 22
 
 /** @constant resetItalic Not italic, not Fraktur*/
@@ -96,34 +96,34 @@ export const resetHideCode: OrnamentCode = 28
 /** @constant resetStrikethrough Not crossed out*/
 export const resetStrikethroughCode: OrnamentCode = 29
 
-/** @constant black Set foreground colour*/
+/** @constant black Set foreground color*/
 export const blackCode: OrnamentCode = 30
 
-/** @constant red Set foreground colour*/
+/** @constant red Set foreground color*/
 export const redCode: OrnamentCode = 31
 
-/** @constant green Set foreground colour*/
+/** @constant green Set foreground color*/
 export const greenCode: OrnamentCode = 32
 
-/** @constant yellow Set foreground colour*/
+/** @constant yellow Set foreground color*/
 export const yellowCode: OrnamentCode = 33
 
-/** @constant blue Set foreground colour*/
+/** @constant blue Set foreground color*/
 export const blueCode: OrnamentCode = 34
 
-/** @constant magenta Set foreground colour*/
+/** @constant magenta Set foreground color*/
 export const magentaCode: OrnamentCode = 35
 
-/** @constant cyan Set foreground colour*/
+/** @constant cyan Set foreground color*/
 export const cyanCode: OrnamentCode = 36
 
-/** @constant white Set foreground colour*/
+/** @constant white Set foreground color*/
 export const whiteCode: OrnamentCode = 37
 
-/** @constant resetForeground Default foreground colour 	implementation defined (according to standard)*/
+/** @constant resetForeground Default foreground color 	implementation defined (according to standard)*/
 export const resetForegroundCode: OrnamentCode = 39
 
-/** @constant bgBlack Set background colour*/
+/** @constant bgBlack Set background color*/
 export const bgBlackCode: OrnamentCode = 40
 
 /** @constant bgRed Set background color*/
@@ -147,7 +147,7 @@ export const bgCyanCode: OrnamentCode = 46
 /** @constant bgWhite Set background color*/
 export const bgWhiteCode: OrnamentCode = 47
 
-/** @constant bgReset Default background colour 	implementation defined (according to standard)*/
+/** @constant bgReset Default background color 	implementation defined (according to standard)*/
 export const resetBackgroundCode: OrnamentCode = 49
 
 /** @constant resetPropSpacing Disable proportional spacing 	T.61 and T.416*/
@@ -192,52 +192,52 @@ export const superscriptCode: OrnamentCode = 73
 /** @constant subscript mintty (not in standard)*/
 export const subscriptCode: OrnamentCode = 74
 
-/** @constant gray  Set bright foreground colour 	aixterm (not in standard)*/
+/** @constant gray  Set bright foreground color 	aixterm (not in standard)*/
 export const grayCode: OrnamentCode = 90
 
-/** @constant brightRed Set bright foreground colour 	aixterm (not in standard)*/
+/** @constant brightRed Set bright foreground color 	aixterm (not in standard)*/
 export const brightRedCode: OrnamentCode = 91
 
-/** @constant brightGreen Set bright foreground colour 	aixterm (not in standard)*/
+/** @constant brightGreen Set bright foreground color 	aixterm (not in standard)*/
 export const brightGreenCode: OrnamentCode = 92
 
-/** @constant brightYellow Set bright foreground colour 	aixterm (not in standard)*/
+/** @constant brightYellow Set bright foreground color 	aixterm (not in standard)*/
 export const brightYellowCode: OrnamentCode = 93
 
-/** @constant brightBlue Set bright foreground colour 	aixterm (not in standard)*/
+/** @constant brightBlue Set bright foreground color 	aixterm (not in standard)*/
 export const brightBlueCode: OrnamentCode = 94
 
-/** @constant brightMagenta Set bright foreground colour 	aixterm (not in standard)*/
+/** @constant brightMagenta Set bright foreground color 	aixterm (not in standard)*/
 export const brightMagentaCode: OrnamentCode = 95
 
-/** @constant brightCyan Set bright foreground colour 	aixterm (not in standard)*/
+/** @constant brightCyan Set bright foreground color 	aixterm (not in standard)*/
 export const brightCyanCode: OrnamentCode = 96
 
-/** @constant brightWhite Set bright foreground colour 	aixterm (not in standard)*/
+/** @constant brightWhite Set bright foreground color 	aixterm (not in standard)*/
 export const brightWhiteCode: OrnamentCode = 97
 
-/** @constant bgBrightBlack Set bright background colour*/
+/** @constant bgBrightBlack Set bright background color*/
 export const bgBrightBlackCode: OrnamentCode = 100
 
-/** @constant bgBrightRed Set bright background colour*/
+/** @constant bgBrightRed Set bright background color*/
 export const bgBrightRedCode: OrnamentCode = 101
 
-/** @constant bgBrightGreen Set bright background colour*/
+/** @constant bgBrightGreen Set bright background color*/
 export const bgBrightGreenCode: OrnamentCode = 102
 
-/** @constant bgBrightYellow Set bright background colour*/
+/** @constant bgBrightYellow Set bright background color*/
 export const bgBrightYellowCode: OrnamentCode = 103
 
-/** @constant bgBrightBlue Set bright background colour*/
+/** @constant bgBrightBlue Set bright background color*/
 export const bgBrightBlueCode: OrnamentCode = 104
 
-/** @constant bgBrightMagenta Set bright background colour*/
+/** @constant bgBrightMagenta Set bright background color*/
 export const bgBrightMagentaCode: OrnamentCode = 105
 
-/** @constant bgBrightCyan Set bright background colour*/
+/** @constant bgBrightCyan Set bright background color*/
 export const bgBrightCyanCode: OrnamentCode = 106
 
-/** @constant bgBrightWhite Set bright background colour*/
+/** @constant bgBrightWhite Set bright background color*/
 export const bgBrightWhiteCode: OrnamentCode = 107
 
 /**
