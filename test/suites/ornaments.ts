@@ -3,6 +3,11 @@ import { showMe } from './showMe'
 
 export const ornaments = (): void =>
   describe('ornaments', () => {
+    beforeAll(() => {
+      // CI/CD need this
+      fude.setEnabled(true)
+    })
+
     test('modifiers', () => {
       const output = `${fude.reset('reset')} ${fude.bold('bold')} ${fude.dim(
         'dim'
@@ -10,17 +15,17 @@ export const ornaments = (): void =>
         'underline'
       )} ${fude.doublyUnderline('doublyUnderline')} ${fude.blinkSlow(
         'slow'
-      )} ${fude.blinkFast('fast')} ${fude.invert('invert')} ${fude.hide(
+      )} ${fude.blinkFast('fast')} ${fude.inverse('inverse')} ${fude.hide(
         'hide'
       )} ${fude.strikethrough('strikethrough')}`
       showMe(output)
 
       expect(output).toMatchInlineSnapshot(
-        `"[0mreset[0m [1mbold[22m [2mdim[22m [3mitalic[23m [4munderline[24m [21mdoublyUnderline[24m [5mslow[25m [6mfast[26m [7minvert[27m [8mhide[28m [9mstrikethrough[29m"`
+        `"[0mreset[0m [1mbold[22m [2mdim[22m [3mitalic[23m [4munderline[24m [21mdoublyUnderline[24m [5mslow[25m [6mfast[26m [7minverse[27m [8mhide[28m [9mstrikethrough[29m"`
       )
     })
 
-    test('foreground colours', () => {
+    test('foreground colors', () => {
       const output = `${fude.black('black')} ${fude.red('red')} ${fude.green(
         'green'
       )} ${fude.yellow('yellow')} ${fude.blue('blue')} ${fude.magenta(
@@ -33,7 +38,7 @@ export const ornaments = (): void =>
       )
     })
 
-    test('background colours', () => {
+    test('background colors', () => {
       const output = `${fude.bgBlack('black')} ${fude.bgRed(
         'red'
       )} ${fude.bgGreen('green')} ${fude.bgYellow('yellow')} ${fude.bgBlue(
@@ -48,7 +53,7 @@ export const ornaments = (): void =>
       )
     })
 
-    test('bright foreground colours', () => {
+    test('bright foreground colors', () => {
       const output = `${fude.gray('gray')} ${fude.brightRed(
         'red'
       )} ${fude.brightGreen('green')} ${fude.brightYellow(
@@ -63,7 +68,7 @@ export const ornaments = (): void =>
       )
     })
 
-    test('bright background colours', () => {
+    test('bright background colors', () => {
       const output = `${fude.bgGray('gray')} ${fude.bgBrightRed(
         'red'
       )} ${fude.bgBrightGreen('green')} ${fude.bgBrightYellow(

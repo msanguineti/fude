@@ -3,6 +3,11 @@ import { showMe } from './showMe'
 
 export const templateLiterals = (): void =>
   describe('template literals', () => {
+    beforeAll(() => {
+      // CI/CD need this
+      fude.setEnabled(true)
+    })
+
     test('simple', () => {
       const output = fude.bgCyan`background is cyan`
       showMe(output)
@@ -15,7 +20,7 @@ export const templateLiterals = (): void =>
       showMe(output)
 
       expect(output).toMatchInlineSnapshot(
-        `"[100m[30mbackground is gray, text is black with bold and white exclamation mark[1m[37m![39m[30m[22m[39m[49m"`
+        `"[100m[30mbackground is gray, text is black with bold and white exclamation mark[1m[37m![30m[22m[39m[49m"`
       )
     })
 
@@ -26,7 +31,7 @@ export const templateLiterals = (): void =>
       }bgRed`
       showMe(output)
 
-      expect(output).toMatchInlineSnapshot(`"[41mbgRed[43mbgYellow[49m[41m[42mbgGreen[49m[41mbgRed[49m"`)
+      expect(output).toMatchInlineSnapshot(`"[41mbgRed[43mbgYellow[41m[42mbgGreen[41mbgRed[49m"`)
     })
 
     test('mixing template literals with functions', () => {
@@ -35,7 +40,7 @@ export const templateLiterals = (): void =>
       }bgRed`
       showMe(output)
 
-      expect(output).toMatchInlineSnapshot(`"[41mbgRed[43mbgYellow[49m[41m[42mbgGreen[49m[41mbgRed[49m"`)
+      expect(output).toMatchInlineSnapshot(`"[41mbgRed[43mbgYellow[41m[42mbgGreen[41mbgRed[49m"`)
     })
 
     test('mixing functions with template literals', () => {
@@ -44,6 +49,16 @@ export const templateLiterals = (): void =>
       )
       showMe(output)
 
-      expect(output).toMatchInlineSnapshot(`"[41mbgRed[43mbgYellow[42mbgGreen[49m[41m[43m[49m[41mbgRed[49m"`)
+      expect(output).toMatchInlineSnapshot(`"[41mbgRed[43mbgYellow[42mbgGreen[43m[41mbgRed[49m"`)
+    })
+
+    test('switch off colors in templates', () => {
+      const colors = fude.isEnabled()
+      fude.setEnabled(false)
+      const output = fude.bgWhite`shouldn't go back to ${fude.bgBlack`black`}`
+      fude.setEnabled(colors)
+      showMe(output)
+
+      expect(output).toMatchInlineSnapshot(`"shouldn't go back to black"`)
     })
   })
