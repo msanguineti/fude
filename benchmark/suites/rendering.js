@@ -9,30 +9,31 @@ const test = (c) =>
       )}${'X'}${c.magenta(`${'X'}${c.white('X')}${c.cyan('X')}${'X'}`)}${'X'}`
     )}${'X'}`
   )
-//   c.bgRed`${c.white`筆`}` + c.bgWhite` ${c.black`fude`} `
 
-// console.log('\n')
-// console.table(
-//   Object.keys(modules).map((id) => {
-//     const output = test(modules[id])
-//     console.log(output)
-//     return { lib: id, out: output }
-//   })
-// )
-// console.log('\n')
+/**
+ * Have a look at what is benchmarked
+ */
+if (
+  process.env.DRY_RUN_BENCHMARKS &&
+  /^\s*(?:true|1|on)\s*$/i.test(process.env.DRY_RUN_BENCHMARKS)
+) {
+  console.log('\n* String rendering\n')
 
-// process.exit(0)
+  Object.keys(modules).forEach((id) => {
+    console.log(test(modules[id]))
+  })
+} else {
+  const addTests = (bench) =>
+    Object.keys(modules).map((id) => bench.add(id, () => test(modules[id])))
 
-const addTests = (bench) =>
-  Object.keys(modules).map((id) => bench.add(id, () => test(modules[id])))
+  module.exports = b.suite(
+    'String rendering',
 
-module.exports = b.suite(
-  'String rendering',
+    ...addTests(b),
 
-  ...addTests(b),
-
-  b.cycle(),
-  b.complete(),
-  b.save({ file: 'rendering', format: 'chart.html' }),
-  b.save({ file: 'rendering', format: 'csv' })
-)
+    b.cycle(),
+    b.complete(),
+    b.save({ file: 'rendering', format: 'chart.html' }),
+    b.save({ file: 'rendering', format: 'csv' })
+  )
+}

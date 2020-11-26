@@ -17,17 +17,33 @@ _[Use GitHub interface](https://blog.sapegin.me/all/open-source-for-everyone/) f
 
 Run linters and tests:
 
-```bash
+```sh
 npm test
 ```
 
 Or run tests in watch mode:
 
-```bash
+```sh
 npm run test:watch
 ```
 
 **Don’t forget to add tests and update documentation for your changes.**
+
+Check coverage:
+
+```sh
+npm run test:coverage
+```
+
+**Please, strive for 100% coverage -- I know 100% is not technically necessary, but...**
+
+Run benchmarks:
+
+```sh
+npm run benchmarks
+```
+
+**If benchmarks have changed significantly, update the relevant documentation!**
 
 **Please update npm lock file (`package-lock.json`) if you add or update dependencies.**
 
