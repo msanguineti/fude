@@ -20,11 +20,14 @@
     "build": "rollup -c",
     "pretest": "npm run lint",
     "test": "jest",
+    "test:watch": "jest -w",
+    "test:coverage": "npm t -- --coverage",
     "posttest": "npm run format",
     "format": "prettier --loglevel warn --write .",
     "lint": "eslint . --cache --fix --ext .ts,.tsx",
     "prepublishOnly": "npm t && npm run build",
-    "benchmark": "npm t && npm run build && npm i . -C benchmark && node benchmark/index.js"
+    "prebenchmarks": "npm t && npm run build && npm pack",
+    "benchmarks": "npm i . -C benchmark && node benchmark/index.js"
   },
   "keywords": [
     "color",

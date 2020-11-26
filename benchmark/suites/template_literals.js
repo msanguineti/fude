@@ -2,7 +2,7 @@ const { modules } = require('../modules')
 
 const test = (c) => c.bgRed`${c.white`筆`}` + c.bgWhite` ${c.black`fude`} `
 
-console.log('\n')
+console.log('\n* Template Literals:\n')
 console.table(
   Object.keys(modules).map((id) => {
     const output = test(modules[id])
@@ -10,4 +10,3 @@ console.table(
     return { lib: id, out: output }
   })
 )
-console.log('\n')

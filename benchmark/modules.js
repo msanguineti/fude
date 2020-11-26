@@ -1,5 +1,5 @@
 exports.modules = {
-  fude: require('fude'),
+  fude: require('../lib'),
   chalk: require('chalk'),
   kleur: require('kleur'),
   colors: require('colors'),

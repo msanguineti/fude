@@ -16,23 +16,7 @@ export default [
           exclude: ['node_modules', 'test', 'lib', '**/*spec.ts'],
         },
       }),
-      terser(/*{ format: { ecma: 2018, beautify: true } }*/),
+      terser({ format: { beautify: true } }),
     ],
   },
-  // {
-  //   input: 'src/codes.ts',
-  //   output: [
-  //     { file: 'codes.js', format: 'cjs' },
-  //     { file: 'codes.mjs', format: 'es' },
-  //   ],
-  //   plugins: [
-  //     typescript({
-  //       tsconfigOverride: {
-  //         include: ['src/codes.ts'],
-  //         exclude: ['node_modules', 'test', 'lib', '**/*spec.ts'],
-  //       },
-  //     }),
-  //     terser({ format: { ecma: 2018, beautify: true } }),
-  //   ],
-  // },
 ]
