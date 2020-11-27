@@ -1,3 +1,5 @@
+import { hitchi } from './core'
+
 /**
  * 文字装飾 - A ornament to apply to some text
  *
@@ -5,66 +7,12 @@
  * @returns the modified input string
  */
 export type CharacterOrnament = (
+  // ...text: unknown[]
   ...text:
     | string[]
     | TemplateStringsArray[]
     | [TemplateStringsArray, ...string[]]
 ) => string
-
-/**
- * This code was taken from Kleur (https://github.com/lukeed/kleur) and adapted for our use case.
- *
- * FORCE_COLOR should decide whether to force colors or not.
- */
-const { FORCE_COLOR, NODE_DISABLE_COLORS, NO_COLOR, TERM } = process.env
-const isTTY = process.stdout && process.stdout.isTTY
-
-let enabled = FORCE_COLOR
-  ? !/^\s*(?:false|0|off)\s*$/i.test(FORCE_COLOR)
-  : !NODE_DISABLE_COLORS && NO_COLOR == null && TERM !== 'dumb' && isTTY
-
-export const setEnabled = (colorsEnabled: boolean): void => {
-  enabled = colorsEnabled
-}
-
-export const isEnabled = (): boolean => enabled
-
-const templates = (txt, keys, opt) => {
-  let ret = txt[0]
-  for (let i = 0; i < keys.length; i++) {
-    ret += keys[i] + txt[i + 1]
-  }
-
-  return enabled
-    ? opt.open +
-        (ret.includes(opt.close) ? ret.replace(opt.rgx, opt.open) : ret) +
-        opt.close
-    : ret
-}
-
-/**
- * 筆致 - Only apply the given modifier to the input string if we are in a TTY environment or if the FORCE_COLOR flag is set.
- *
- * @param text the input string
- * @param on the modifier on code
- * @param off the modifier off code
- * @returns a string with the applied modifier
- */
-const hitchi = (on, off) => {
-  const opt = {
-    open: `\x1b[${on}m`,
-    close: `\x1b[${off}m`,
-    rgx: new RegExp(`\\x1b\\[${off}m`, 'g'),
-  }
-  return (txt, ...keys) =>
-    keys.length !== 0
-      ? templates(txt, keys, opt)
-      : enabled
-      ? opt.open +
-        (txt.includes(opt.close) ? txt.replace(opt.rgx, opt.open) : txt) +
-        opt.close
-      : txt + ''
-}
 
 /**
  * All attributes off.

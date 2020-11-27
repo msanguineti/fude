@@ -43,7 +43,9 @@ Run benchmarks:
 npm run benchmarks
 ```
 
-**If benchmarks have changed significantly, update the relevant documentation!**
+Benchmarks are run with [`benny`](https://npmjs.com/package/benny).
+
+**If benchmarks have changed significantly, update the relevant parts in the documentation!**
 
 **Please update npm lock file (`package-lock.json`) if you add or update dependencies.**
 

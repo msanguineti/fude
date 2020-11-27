@@ -7,7 +7,7 @@
     "chalk": "^4.0.0",
     "colorette": "^1.2.1",
     "colors": "^1.4.0",
-    "fude": "file:..",
+    "fude": "file:../fude-0.7.1.tgz",
     "kleur": "^4.1.3"
   }
 }

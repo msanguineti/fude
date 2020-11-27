@@ -2,16 +2,16 @@
 
 > [nodejs][nodejs] library for terminal text style formatting.
 
-[![npm](https://badgen.net/npm/v/fude)](https://npmjs.com/fude)
-![npm_dt](https://badgen.net/npm/dt/fude)
-![npm_license](https://badgen.net/npm/license/fude)
-![npm_types](https://badgen.net/npm/types/fude)
-![bundle_tree](https://badgen.net/bundlephobia/tree-shaking/fude)
-![size](https://badgen.net/packagephobia/install/fude)
-![coveralls](https://badgen.net/coveralls/c/github/msanguineti/fude/main)
-![dependabot](https://badgen.net/github/dependabot/msanguineti/fude)
-![Node.js CI](https://github.com/msanguineti/fude/workflows/Node.js%20CI/badge.svg)
-![CodeQL](https://github.com/msanguineti/fude/workflows/CodeQL/badge.svg)
+[![npm][badge_npm]][fude]
+![npm_dt][badge_npm_dt]
+![npm_license][badge_npm_license]
+![npm_types][badge_npm_types]
+![bundle_tree][badge_bundle_tree]
+![size][badge_size]
+![coveralls][badge_coveralls]
+![dependabot][badge_dependabot]
+![Node.js CI][badge_nodejs_ci]
+![CodeQL][badge_codeql]
 
 ## Features <!-- omit in toc -->
 
@@ -42,14 +42,18 @@
   - [Tagged template literals](#tagged-template-literals)
 - [Ornaments](#ornaments)
   - [Note on terminal capabilities](#note-on-terminal-capabilities)
-- [ANSI Codes](#ansi-codes)
-  - [`fude.ansi(string, ...number)`](#fudeansistring-number)
+- [RGB & HEX](#rgb--hex)
+  - [`fude.rgb(string|<ornament>, {r:number, g:number, b:number})`](#fudergbstringornament-rnumber-gnumber-bnumber)
+  - [`fude.hex(string|<ornament>, hex:number)`](#fudehexstringornament-hexnumber)
+  - [`fude.rgbBg(string|<ornament>, {r:number, g:number, b:number})`](#fudergbbgstringornament-rnumber-gnumber-bnumber)
+  - [`fude.hexBg(string|<ornament>, hex:number)`](#fudehexbgstringornament-hexnumber)
+  - [`fude.rgbUnderline(string|<ornament>, {r:number, g:number, b:number, double?:boolean})`](#fudergbunderlinestringornament-rnumber-gnumber-bnumber-doubleboolean)
+  - [`fude.hexUnderline(string|<ornament>, hex:number, double?:boolean)`](#fudehexunderlinestringornament-hexnumber-doubleboolean)
+- [ANSI SGR Parameters Codes](#ansi-sgr-parameters-codes)
+  - [`fude.ansi(string|<ornament>, ...number)`](#fudeansistringornament-number)
 - [TypeScript](#typescript)
-- [Who's comparing?](#whos-comparing)
-  - [Output](#output)
-  - [Library loading time](#library-loading-time)
-  - [Template literals handling](#template-literals-handling)
 - [What's in a name?](#whats-in-a-name)
+- [Benchmarks](#benchmarks)
 - [Changelog](#changelog)
 - [Contributing](#contributing)
 - [Authors and license](#authors-and-license)
@@ -101,6 +105,8 @@ console.log(ttyCapability())
 Example:
 
 ```js
+import { fude, bgWhite, red } from 'fude'
+
 let output = fude('red text on white background', red, bgWhite)
 ```
 
@@ -109,6 +115,8 @@ let output = fude('red text on white background', red, bgWhite)
 Example:
 
 ```js
+import { bgWhite, red } from 'fude'
+
 let output = bgWhite(red('red text on white background'))
 ```
 
@@ -117,6 +125,8 @@ let output = bgWhite(red('red text on white background'))
 Example:
 
 ```js
+import { bgWhite, red, blue } from 'fude'
+
 let output1 = `${red`red text`} and ${bgWhite`${blue`blue text on white background`}`}`
 
 let output2 =
@@ -156,83 +166,87 @@ Character ornaments (styles) applicable to text.
 
 (check your [terminal capabilities](#tty-capabilities))
 
-## ANSI Codes
+## RGB & HEX
 
-It is possible to call directly the [ANSI code](https://en.wikipedia.org/wiki/ANSI_escape_code#SGR_parameters) number:
+In terminals able to display 16 million colors (welcome to the future) you can have foreground or background colors defined by their RGB or HEX values. **Also underlines with different colors than text!**
 
-### `fude.ansi(string, ...number)`
+### `fude.rgb(string|<ornament>, {r:number, g:number, b:number})`
 
-Example: `ansi('This text is black on green background', 42, 30)`
+### `fude.hex(string|<ornament>, hex:number)`
+
+### `fude.rgbBg(string|<ornament>, {r:number, g:number, b:number})`
+
+### `fude.hexBg(string|<ornament>, hex:number)`
+
+### `fude.rgbUnderline(string|<ornament>, {r:number, g:number, b:number, double?:boolean})`
+
+### `fude.hexUnderline(string|<ornament>, hex:number, double?:boolean)`
+
+Examples:
+
+```js
+import { rgb, hexBg, rgbUnderline, black, bold, red } from 'fude'
+
+console.log(rgb('tomato text', { r: 255, g: 99, b: 71 }))
+
+console.log(hexBg('mustard background', '#FFBF47'))
+
+// this will underline the text and apply the given color to the underline only
+console.log(
+  `${rgbBg('You have misspelt:', { g: 128 })} ${rgbUnderline(
+    black(bold('buisness')),
+    255,
+    50,
+    50
+  )}`
+)
+
+console.log(`
+  Q: 1 + 1
+  
+  A: ${hexUnderline('3', '#FF0000', true)} ${bold(red('Bad Error!!!'))}`)
+```
+
+![rgb_examples](media/rgb_hex_examples.png)
+
+## ANSI SGR Parameters Codes
+
+It is possible to call directly the ANSI [SGR Parameters][sgr_params] codes:
+
+### `fude.ansi(string|<ornament>, ...number)`
+
+Example:
+
+```js
+import * as fude from 'fude'
+
+fude.ansi('This text is black on green background', 42, 30)
+
+// or composing with ornaments
+
+ansi(
+  'white on green and ' +
+    italic(bold('italic, bold and white on green background')),
+  42,
+  30
+)
+```
 
 As a convenience, it is possible to use [ornaments](#ornaments) by appending `Code` to their name:
 
 ```js
-fude.ansi('This text is black on green background', bgGreenCode, blackCode)
+import { ansi, bgGreenCode, blackCode } from 'fude'
+
+ansi('This text is black on green background', bgGreenCode, blackCode)
 ```
 
 ## TypeScript
 
 TypeScript types are included.
 
-## Who's comparing?
-
-Let's compare `fude` with some other libraries:
-
-- [`chalk`](https://npmjs.com/chalk)
-- [`kleur`](https://npmjs.com/kleur)
-- [`colorette`](https://npmjs.com/colorette)
-- [`ansi-colors`](https://npmjs.com/ansi-colors)
-- [`colors`](https://npmjs.com/colors)
-
-... what to compare?
-
-- [Output rendering](#output) - how fast is `fude`?
-- [Load times](#library-loading-time) - how fast `fude` loads (`require('fude')`)?
-- [Template literals handling](#template-literals-handling) - how template literals are handled?
-
-### Output
-
-`fude` is fast.
-
-| name        | ops    | margin | percentSlower |
-| ----------- | ------ | ------ | ------------- |
-| fude        | 604509 | 0.24   | 0             |
-| chalk       | 424405 | 0.26   | 29.79         |
-| kleur       | 427387 | 0.68   | 29.3          |
-| colors      | 226040 | 0.26   | 62.61         |
-| colorette   | 573854 | 0.31   | 5.07          |
-| ansi-colors | 266812 | 1.46   | 55.86         |
-
-![rendering](media/rendering.png)
-
-### Library loading time
-
-Let's load a library 1000 times and see what's the average loading time:
-
-| library     | average time |
-| ----------- | ------------ |
-| fude        | 0.563ms      |
-| chalk       | 1.969ms      |
-| kleur       | 0.328ms      |
-| colors      | 4.554ms      |
-| colorette   | 0.352ms      |
-| ansi-colors | 0.970ms      |
-
-Well, `colorette` and `kleur` are fast... but the libraries are smaller than the rest as well.
-
-### Template literals handling
-
-```js
-bgRed`${white`筆`}` + bgWhite` ${black`fude`} `
-```
-
-Only `fude` and `chalk` are correctly handling template literals (as of November 2020)
-
-![template handling](media/template_literals.png)
-
 ## What's in a name?
 
-[**Fude**](https://en.wikipedia.org/wiki/Ink_brush) (筆 - Japanese pronunciation: [[ɸɯ̟ᵝde̞](https://en.wikipedia.org/wiki/Help:IPA/Japanese)] foo-de -- **de** as in **de**ntist) is Japanese for a calligraphy brush. Since there isn't really a plural form in Japanese, in this case 'fude' can be interpreted as 'brushes'.
+[**Fude**][ink_brush] (筆 - Japanese pronunciation: [[ɸɯ̟ᵝde̞][ipa]] foo-de -- **de** as in **de**ntist) is Japanese for a calligraphy brush. Since there isn't really a plural form in Japanese, in this case 'fude' can be interpreted as 'brushes'.
 
 The idea is that you use a different brush for a different style of stroke (or color). Here you have different font styles and foreground/background colors.
 
@@ -241,6 +255,12 @@ fude('筆', bgRed, white)
 ```
 
 This means, I want to use this set of brushes (`bgRed` and `white`) to compose the given text: `筆`.
+
+## Benchmarks
+
+For an analysis of how well `fude` stacks against other libraries as well as which is the fastest way to render a string with `fude`, refer to [benchmarks](Benchmarks.md).
+
+**Spoiler alert** `fude` is fast.
 
 ## Changelog
 
@@ -252,12 +272,26 @@ Everyone is welcome to contribute. Please take a moment to review the [contribut
 
 ## Authors and license
 
-[Mirco Sanguineti](https://github.com/msanguineti/) and [contributors][contributors].
+[Mirco Sanguineti][msanguineti] and [contributors][contributors].
 
 MIT License, see the included [LICENCE](LICENCE) file.
 
-[nodejs]: https://nodejs.org
-[home]: https://github.com/msanguineti/fude
+[msanguineti]: https://github.com/msanguineti/
+[repo]: https://github.com/msanguineti/fude
 [contributors]: https://github.com/msanguineti/fude/graphs/contributors
 [releases]: https://github.com/msanguineti/fude/releases
-[wiki]: https://en.wikipedia.org/wiki/Ink_brush
+[nodejs]: https://nodejs.org
+[badge_npm]: https://badgen.net/npm/v/fude
+[badge_npm_dt]: https://badgen.net/npm/dt/fude
+[badge_npm_license]: https://badgen.net/npm/license/fude
+[badge_npm_types]: https://badgen.net/npm/types/fude
+[badge_bundle_tree]: https://badgen.net/bundlephobia/tree-shaking/fude
+[badge_size]: https://badgen.net/packagephobia/install/fude
+[badge_coveralls]: https://badgen.net/coveralls/c/github/msanguineti/fude/main
+[badge_dependabot]: https://badgen.net/github/dependabot/msanguineti/fude
+[badge_nodejs_ci]: https://github.com/msanguineti/fude/workflows/Node.js%20CI/badge.svg
+[badge_codeql]: https://github.com/msanguineti/fude/workflows/CodeQL/badge.svg
+[ink_brush]: https://en.wikipedia.org/wiki/Ink_brush
+[ipa]: https://en.wikipedia.org/wiki/Help:IPA/Japanese
+[sgr_params]: (https://en.wikipedia.org/wiki/ANSI_escape_code#SGR_parameters)
+[fude]: https://npmjs.com/package/fude
