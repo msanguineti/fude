@@ -1,4 +1,3 @@
-import * as codes from '../../src/codes'
 import * as fude from '../../src'
 
 import { showMe } from './showMe'
@@ -11,7 +10,7 @@ export const ansi_codes = (): void =>
     })
 
     test('TTY capability', () => {
-      const output = codes.ttyCapability()
+      const output = fude.ttyCapability()
       showMe(output)
 
       expect(output).toMatchInlineSnapshot(`
@@ -30,13 +29,46 @@ export const ansi_codes = (): void =>
     })
 
     test('using codes', () => {
-      const output = codes.ansi(
+      const output = fude.ansi(
         'black on bright red background',
-        codes.bgBrightRedCode,
-        codes.blackCode
+        fude.bgBrightRedCode,
+        fude.blackCode
+      )
+      showMe(output)
+      // `"[101;30mblack on bright red background[0m"`
+      expect(output).toMatchInlineSnapshot(
+        `"[101;30mblack on bright red background[49,39m"`
+      )
+    })
+
+    test('passing ornaments functions', () => {
+      const output = fude.ansi(
+        `white on bright green and ${fude.italic(
+          fude.bold('italic, bold and white on bright green background')
+        )}`,
+        fude.bgBrightGreenCode,
+        fude.whiteCode
+      )
+
+      showMe(output)
+
+      // `"[102;37mwhite on bright green and [3m[1mitalic, bold and white on bright green background[0m"`
+      expect(output).toMatchInlineSnapshot(
+        `"[102;37mwhite on bright green and [3m[1mitalic, bold and white on bright green background[49,39m"`
+      )
+    })
+
+    test('passing template literals', () => {
+      const output = fude.ansi(
+        fude.italic`italic and black on bright red background with some ${fude.dim`dim`} and ${fude.inverse`inverse`} text.`,
+        fude.bgBrightRedCode,
+        fude.blackCode
       )
       showMe(output)
 
-      expect(output).toMatchInlineSnapshot(`"[101;30mblack on bright red background[0m"`)
+      // `"[101;30m[3mitalic and black on bright red background with some [2mdim[22m and [7minverse[27m text.[0m"`
+      expect(output).toMatchInlineSnapshot(
+        `"[101;30m[3mitalic and black on bright red background with some [2mdim[22m and [7minverse[27m text.[49,39m"`
+      )
     })
   })

@@ -1,6 +1,6 @@
 import { showMe } from './showMe'
 
-export const misc = (): void =>
+export const environment = (): void =>
   describe('environment', () => {
     test('FORCE_COLOR on envar', () => {
       process.env.FORCE_COLOR = 'on'
