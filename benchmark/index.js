@@ -1,3 +1,5 @@
-require('./suites/template_literals')
-require('./suites/load')
-require('./suites/rendering')
+require('./suites/compare_simple')
+require('./suites/compare_complex')
+require('./suites/compare_template_literals')
+require('./suites/compare_loading')
+require('./suites/compare_libs')

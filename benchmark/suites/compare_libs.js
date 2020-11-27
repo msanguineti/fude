@@ -27,13 +27,13 @@ if (
     Object.keys(modules).map((id) => bench.add(id, () => test(modules[id])))
 
   module.exports = b.suite(
-    'String rendering',
+    'Compare libs string rendering',
 
     ...addTests(b),
 
     b.cycle(),
     b.complete(),
-    b.save({ file: 'rendering', format: 'chart.html' }),
-    b.save({ file: 'rendering', format: 'csv' })
+    b.save({ file: 'compare_libs_rendering', format: 'chart.html' }),
+    b.save({ file: 'compare_libs_rendering', format: 'csv' })
   )
 }
