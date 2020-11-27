@@ -167,10 +167,12 @@ const applyRGB = (
   open,
   close
 ): string =>
-  hitchi(
-    (`${open};${2};${r};${g};${b}` as unknown) as number,
-    close
-  )(text as string)
+  enabled
+    ? hitchi(
+        (`${open};${2};${r};${g};${b}` as unknown) as number,
+        close
+      )(text as string)
+    : (text as string)
 
 const openRGBColorsAttribute = 38
 const closeRGBColorsAttribute = 39
@@ -187,9 +189,7 @@ export const rgb = (
   text: string | CharacterOrnament,
   { r = 0, g = 0, b = 0 }: { r?: number; g?: number; b?: number }
 ): string =>
-  enabled
-    ? applyRGB(r, g, b, text, openRGBColorsAttribute, closeRGBColorsAttribute)
-    : (text as string)
+  applyRGB(r, g, b, text, openRGBColorsAttribute, closeRGBColorsAttribute)
 
 const openRGBBGColorsAttribute = 48
 const closeRGBBGColorsAttribute = 49
@@ -206,16 +206,7 @@ export const rgbBg = (
   text: string | CharacterOrnament,
   { r = 0, g = 0, b = 0 }: { r?: number; g?: number; b?: number }
 ): string =>
-  enabled
-    ? applyRGB(
-        r,
-        g,
-        b,
-        text,
-        openRGBBGColorsAttribute,
-        closeRGBBGColorsAttribute
-      )
-    : (text as string)
+  applyRGB(r, g, b, text, openRGBBGColorsAttribute, closeRGBBGColorsAttribute)
 
 const openRGBUnderlineColorsAttribute = 58
 const closeRGBUnderlineColorsAttribute = 59
@@ -238,16 +229,14 @@ export const rgbUnderline = (
     double = false,
   }: { r?: number; g?: number; b?: number; double?: boolean }
 ): string =>
-  enabled
-    ? applyRGB(
-        r,
-        g,
-        b,
-        double ? hitchi(21, 24)(text as string) : hitchi(4, 24)(text as string),
-        openRGBUnderlineColorsAttribute,
-        closeRGBUnderlineColorsAttribute
-      )
-    : (text as string)
+  applyRGB(
+    r,
+    g,
+    b,
+    double ? hitchi(21, 24)(text as string) : hitchi(4, 24)(text as string),
+    openRGBUnderlineColorsAttribute,
+    closeRGBUnderlineColorsAttribute
+  )
 
 /**
  * Apply a HEX foreground color value to the given input text.
@@ -261,11 +250,14 @@ export const hex = (text: string | CharacterOrnament, hex: string): string => {
   const match = /([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})/i.exec(hex)
 
   return match
-    ? rgb(text, {
-        r: parseInt(match[1], 16),
-        g: parseInt(match[2], 16),
-        b: parseInt(match[3], 16),
-      })
+    ? applyRGB(
+        parseInt(match[1], 16),
+        parseInt(match[2], 16),
+        parseInt(match[3], 16),
+        text,
+        openRGBColorsAttribute,
+        closeRGBColorsAttribute
+      )
     : (text as string)
 }
 
@@ -284,11 +276,14 @@ export const hexBg = (
   const match = /([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})/i.exec(hex)
 
   return match
-    ? rgbBg(text, {
-        r: parseInt(match[1], 16),
-        g: parseInt(match[2], 16),
-        b: parseInt(match[3], 16),
-      })
+    ? applyRGB(
+        parseInt(match[1], 16),
+        parseInt(match[2], 16),
+        parseInt(match[3], 16),
+        text,
+        openRGBBGColorsAttribute,
+        closeRGBBGColorsAttribute
+      )
     : (text as string)
 }
 
@@ -308,11 +303,13 @@ export const hexUnderline = (
   const match = /([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})/i.exec(hex)
 
   return match
-    ? rgbUnderline(text, {
-        r: parseInt(match[1], 16),
-        g: parseInt(match[2], 16),
-        b: parseInt(match[3], 16),
-        double,
-      })
+    ? applyRGB(
+        parseInt(match[1], 16),
+        parseInt(match[2], 16),
+        parseInt(match[3], 16),
+        double ? hitchi(21, 24)(text as string) : hitchi(4, 24)(text as string),
+        openRGBUnderlineColorsAttribute,
+        closeRGBUnderlineColorsAttribute
+      )
     : (text as string)
 }
