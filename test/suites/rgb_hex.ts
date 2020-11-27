@@ -9,9 +9,13 @@ export const rgb_hex = (): void =>
         fude.rgb('tomato text', { r: 255, g: 99, b: 71 }) + ' i am blue'
       )
 
+      showMe(rgb1)
+
       expect(rgb1).toMatchInlineSnapshot(`"[34m[38;2;255;99;71mtomato text[34m i am blue[39m"`)
 
       const rgb2 = fude.rgbBg('mustard background', { r: 255, g: 191, b: 71 })
+
+      showMe(rgb2)
 
       expect(rgb2).toMatchInlineSnapshot(`"[48;2;255;191;71mmustard background[49m"`)
 
@@ -22,6 +26,8 @@ export const rgb_hex = (): void =>
         g: 50,
         b: 50,
       })}`
+
+      showMe(rgb3)
 
       expect(rgb3).toMatchInlineSnapshot(`"[38;2;0;128;0mYou have misspelt:[39m [58;2;255;50;50m[4m[30m[1mbuisness[22m[39m[24m[59m"`)
 
@@ -38,6 +44,8 @@ export const rgb_hex = (): void =>
 
               A: [58;2;255;0;0m[21m3[24m[59m [1m[31mBad Error!!![39m[22m"
       `)
+
+      showMe(rgb4)
 
       const hex1 = fude.blue(fude.hex('tomato text', 'ff6347') + ' i am blue')
 
@@ -62,5 +70,46 @@ export const rgb_hex = (): void =>
       )}`
 
       expect(hex4).toMatch(rgb4)
+    })
+
+    test('hex wrong arg', () => {
+      const hex1 = fude.blue(
+        fude.hex('not tomato text but', 'foobar') + ' i am blue'
+      )
+
+      showMe(hex1)
+
+      expect(hex1).toMatchInlineSnapshot(`"[34mnot tomato text but i am blue[39m"`)
+
+      const hex2 = fude.hexBg('not mustard background', '#bar')
+
+      showMe(hex2)
+
+      expect(hex2).toMatchInlineSnapshot(`"not mustard background"`)
+
+      const hex3 = `${fude.hex(
+        'You have misspelt:',
+        '008000'
+      )} ${fude.hexUnderline(
+        fude.black(fude.bold('buisness')),
+        'foo'
+      )} and no colored underlined`
+
+      showMe(hex3)
+
+      expect(hex3).toMatchInlineSnapshot(
+        `"[38;2;0;128;0mYou have misspelt:[39m [30m[1mbuisness[22m[39m and no colored underlined"`
+      )
+    })
+
+    test('rgb hex colors off', () => {
+      process.env.FORCE_COLOR = 'off'
+      // eslint-disable-next-line @typescript-eslint/no-var-requires
+      const f = require('../../src')
+      const rgb2 = f.rgbBg('not mustard background', { r: 255, g: 191, b: 71 })
+
+      showMe(rgb2)
+
+      expect(rgb2).toMatchInlineSnapshot(`"not mustard background"`)
     })
   })

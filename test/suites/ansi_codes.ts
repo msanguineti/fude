@@ -71,4 +71,24 @@ export const ansi_codes = (): void =>
         `"[101;30m[3mitalic and black on bright red background with some [2mdim[22m and [7minverse[27m text.[49,39m"`
       )
     })
+
+    test('no colors nsi', () => {
+      process.env.FORCE_COLOR = 'off'
+
+      // eslint-disable-next-line @typescript-eslint/no-var-requires
+      const f = require('../../src')
+      const output = f.ansi('not red', 31)
+
+      showMe(output)
+
+      expect(output).toMatchInlineSnapshot(`"not red"`)
+    })
+
+    test('passing unknown open/close attribute', () => {
+      const output = fude.ansi('close with 0', 300)
+
+      showMe(output)
+
+      expect(output).toMatchInlineSnapshot(`"[300mclose with 0[0m"`)
+    })
   })
