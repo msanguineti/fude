@@ -1,6 +1,13 @@
-# Who's comparing?
+# Who's comparing? <!-- omit in toc -->
 
 Let's compare `fude`'s modus operandi first, then, let's see how it stacks against some other libraries.
+
+- [Simple strings](#simple-strings)
+- [Complex strings](#complex-strings)
+- [Other libraries](#other-libraries)
+- [String rendering](#string-rendering)
+- [Library loading time](#library-loading-time)
+- [Template literals handling](#template-literals-handling)
 
 ## Simple strings
 
