@@ -170,6 +170,8 @@ Character ornaments (styles) applicable to text.
 
 In terminals able to display 16 million colors (welcome to the future) you can have foreground or background colors defined by their RGB or HEX values. **Also underlines with different colors than text!**
 
+HEX values are accepted starting with or without `#`, both short form `FFF` and long form `FFFFFF`.
+
 ### `fude.rgb(string|<ornament>, {r:number, g:number, b:number})`
 
 ### `fude.hex(string|<ornament>, hex:number)`
@@ -204,7 +206,7 @@ console.log(
 console.log(`
   Q: 1 + 1
   
-  A: ${hexUnderline('3', '#FF0000', true)} ${bold(red('Bad Error!!!'))}`)
+  A: ${hexUnderline('3', 'F00', true)} ${bold(red('Bad Error!!!'))}`)
 ```
 
 ![rgb_examples](media/rgb_hex_examples.png)

@@ -65,7 +65,7 @@ export const rgb_hex = (): void =>
       const hex4 = `
       Q: 1 + 1
 
-      A: ${fude.hexUnderline(3 + '', 'ff0000', true)} ${fude.bold(
+      A: ${fude.hexUnderline(3 + '', 'F00', true)} ${fude.bold(
         fude.red('Bad Error!!!')
       )}`
 
@@ -79,13 +79,15 @@ export const rgb_hex = (): void =>
 
       showMe(hex1)
 
-      expect(hex1).toMatchInlineSnapshot(`"[34mnot tomato text but i am blue[39m"`)
+      expect(hex1).toMatchInlineSnapshot(
+        `"[34m[38;2;NaN;NaN;NaNmnot tomato text but[34m i am blue[39m"`
+      )
 
       const hex2 = fude.hexBg('not mustard background', '#bar')
 
       showMe(hex2)
 
-      expect(hex2).toMatchInlineSnapshot(`"not mustard background"`)
+      expect(hex2).toMatchInlineSnapshot(`"[48;2;187;170;NaNmnot mustard background[49m"`)
 
       const hex3 = `${fude.hex(
         'You have misspelt:',
@@ -98,7 +100,7 @@ export const rgb_hex = (): void =>
       showMe(hex3)
 
       expect(hex3).toMatchInlineSnapshot(
-        `"[38;2;0;128;0mYou have misspelt:[39m [30m[1mbuisness[22m[39m and no colored underlined"`
+        `"[38;2;0;128;0mYou have misspelt:[39m [58;2;255;NaN;NaNm[4m[30m[1mbuisness[22m[39m[24m[59m and no colored underlined"`
       )
     })
 

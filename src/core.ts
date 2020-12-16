@@ -231,56 +231,81 @@ export const rgbUnderline = (
     closeRGBUnderlineColorsAttribute
   )
 
+const hexToRGB = (hexValue: string) => {
+  switch (hexValue.length) {
+    case 3:
+      return {
+        r: +`0x${hexValue[0]}${hexValue[0]}`,
+        g: +`0x${hexValue[1]}${hexValue[1]}`,
+        b: +`0x${hexValue[2]}${hexValue[2]}`,
+      }
+    case 4:
+      return {
+        r: +`0x${hexValue[1]}${hexValue[1]}`,
+        g: +`0x${hexValue[2]}${hexValue[2]}`,
+        b: +`0x${hexValue[3]}${hexValue[3]}`,
+      }
+    case 6:
+      return {
+        r: +`0x${hexValue[0]}${hexValue[1]}`,
+        g: +`0x${hexValue[2]}${hexValue[3]}`,
+        b: +`0x${hexValue[4]}${hexValue[5]}`,
+      }
+    case 7:
+      return {
+        r: +`0x${hexValue[1]}${hexValue[2]}`,
+        g: +`0x${hexValue[3]}${hexValue[4]}`,
+        b: +`0x${hexValue[5]}${hexValue[6]}`,
+      }
+  }
+}
+
 /**
  * Apply a HEX foreground color value to the given input text.
  *
- * Case insensitive, with or without `#` as a prefix.
+ * Case insensitive, with or without `#` as a prefix, both in long (FFFFFF) and short (FFF) form.
  *
  * @param text the input string
  * @param hexValue the hex color value
  */
 export const hex = (text: string, hexValue: string): string => {
-  const match = /([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})/i.exec(hexValue)
+  const { r, g, b } = hexToRGB(hexValue)
 
-  return match
-    ? applyRGB(
-        parseInt(match[1], 16),
-        parseInt(match[2], 16),
-        parseInt(match[3], 16),
-        text,
-        openRGBColorsAttribute,
-        closeRGBColorsAttribute
-      )
-    : (text as string)
+  return applyRGB(
+    r,
+    g,
+    b,
+    text,
+    openRGBColorsAttribute,
+    closeRGBColorsAttribute
+  )
 }
 
 /**
  * Apply a HEX background color value to the given input text.
  *
- * Case insensitive, with or without `#` as a prefix.
+ * Case insensitive, with or without `#` as a prefix, both in long (FFFFFF) and short (FFF) form.
  *
  * @param text the input string
  * @param hexValue the hex color value
  */
 export const hexBg = (text: string, hexValue: string): string => {
-  const match = /([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})/i.exec(hexValue)
+  const { r, g, b } = hexToRGB(hexValue)
 
-  return match
-    ? applyRGB(
-        parseInt(match[1], 16),
-        parseInt(match[2], 16),
-        parseInt(match[3], 16),
-        text,
-        openRGBBGColorsAttribute,
-        closeRGBBGColorsAttribute
-      )
-    : (text as string)
+  return applyRGB(
+    r,
+    g,
+    b,
+    text,
+    openRGBBGColorsAttribute,
+    closeRGBBGColorsAttribute
+  )
 }
 
 /**
  * Apply a HEX color value to the underline of the given input text.
  *
- * Case insensitive, with or without `#` as a prefix.
+ * Case insensitive, with or without `#` as a prefix, both in long (FFFFFF) and short (FFF) form.
  *
  * @param text the input string
  * @param hexValue the hex color value
@@ -290,16 +315,14 @@ export const hexUnderline = (
   hexValue: string,
   double = false
 ): string => {
-  const match = /([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})/i.exec(hexValue)
+  const { r, g, b } = hexToRGB(hexValue)
 
-  return match
-    ? applyRGB(
-        parseInt(match[1], 16),
-        parseInt(match[2], 16),
-        parseInt(match[3], 16),
-        double ? hitchi(21, 24)(text as string) : hitchi(4, 24)(text as string),
-        openRGBUnderlineColorsAttribute,
-        closeRGBUnderlineColorsAttribute
-      )
-    : (text as string)
+  return applyRGB(
+    r,
+    g,
+    b,
+    double ? hitchi(21, 24)(text as string) : hitchi(4, 24)(text as string),
+    openRGBUnderlineColorsAttribute,
+    closeRGBUnderlineColorsAttribute
+  )
 }
