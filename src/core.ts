@@ -63,13 +63,8 @@ export const hitchi = (
  * @param text the input string
  * @param tos text ornaments to apply
  */
-export const fude = (
-  text: string | CharacterOrnament,
-  ...tos: CharacterOrnament[]
-): string => tos.reduceRight((v, f) => f(v), text as string)
-
-// match close attributes escape codes at the end of a given string
-const rgx = new RegExp(`(?:\\x1b\\[[0-9]{1,3}m)+$`, 'i')
+export const fude = (text: string, ...tos: CharacterOrnament[]): string =>
+  tos.reduceRight((v, f) => f(v), text as string)
 
 const closeAttribute = {
   0: 0,
@@ -147,23 +142,21 @@ const closeAttribute = {
  * @param text the input string
  * @param codes the OrnamentCode codes to apply to the input
  */
-export const ansi = (
-  text: string | CharacterOrnament,
-  ...codes: OrnamentCode[]
-): string =>
-  enabled
-    ? `\x1b[${codes.join(';')}m` +
-      ((text as string).indexOf('\x1b[') >= 0
-        ? (text as string).replace(rgx, '')
-        : text) +
-      `\x1b[${codes.map((c) => closeAttribute[c] ?? 0)}m`
-    : (text as string)
+export const ansi = (text: string, ...codes: OrnamentCode[]): string => {
+  for (let i = 0; i < codes.length; i++) {
+    const element = codes[i]
+
+    text = hitchi(element, closeAttribute[element])(text)
+  }
+
+  return text
+}
 
 const applyRGB = (
   r: number,
   g: number,
   b: number,
-  text: string | CharacterOrnament,
+  text: string,
   open,
   close
 ): string =>
@@ -186,7 +179,7 @@ const closeRGBColorsAttribute = 39
  * @param b blue color attribute (0-255) default 0
  */
 export const rgb = (
-  text: string | CharacterOrnament,
+  text: string,
   { r = 0, g = 0, b = 0 }: { r?: number; g?: number; b?: number }
 ): string =>
   applyRGB(r, g, b, text, openRGBColorsAttribute, closeRGBColorsAttribute)
@@ -203,7 +196,7 @@ const closeRGBBGColorsAttribute = 49
  * @param b blue color attribute (0-255) default 0
  */
 export const rgbBg = (
-  text: string | CharacterOrnament,
+  text: string,
   { r = 0, g = 0, b = 0 }: { r?: number; g?: number; b?: number }
 ): string =>
   applyRGB(r, g, b, text, openRGBBGColorsAttribute, closeRGBBGColorsAttribute)
@@ -221,7 +214,7 @@ const closeRGBUnderlineColorsAttribute = 59
  * @param double doubly underline default to `false`
  */
 export const rgbUnderline = (
-  text: string | CharacterOrnament,
+  text: string,
   {
     r = 0,
     g = 0,
@@ -244,10 +237,10 @@ export const rgbUnderline = (
  * Case insensitive, with or without `#` as a prefix.
  *
  * @param text the input string
- * @param hex the color value as an hex number
+ * @param hexValue the hex color value
  */
-export const hex = (text: string | CharacterOrnament, hex: string): string => {
-  const match = /([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})/i.exec(hex)
+export const hex = (text: string, hexValue: string): string => {
+  const match = /([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})/i.exec(hexValue)
 
   return match
     ? applyRGB(
@@ -267,13 +260,10 @@ export const hex = (text: string | CharacterOrnament, hex: string): string => {
  * Case insensitive, with or without `#` as a prefix.
  *
  * @param text the input string
- * @param hex the color value as an hex number
+ * @param hexValue the hex color value
  */
-export const hexBg = (
-  text: string | CharacterOrnament,
-  hex: string
-): string => {
-  const match = /([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})/i.exec(hex)
+export const hexBg = (text: string, hexValue: string): string => {
+  const match = /([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})/i.exec(hexValue)
 
   return match
     ? applyRGB(
@@ -293,14 +283,14 @@ export const hexBg = (
  * Case insensitive, with or without `#` as a prefix.
  *
  * @param text the input string
- * @param hex the color value as an hex number
+ * @param hexValue the hex color value
  */
 export const hexUnderline = (
-  text: string | CharacterOrnament,
-  hex: string,
+  text: string,
+  hexValue: string,
   double = false
 ): string => {
-  const match = /([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})/i.exec(hex)
+  const match = /([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})/i.exec(hexValue)
 
   return match
     ? applyRGB(

@@ -36,9 +36,7 @@ export const ansi_codes = (): void =>
       )
       showMe(output)
       // `"[101;30mblack on bright red background[0m"`
-      expect(output).toMatchInlineSnapshot(
-        `"[101;30mblack on bright red background[49,39m"`
-      )
+      expect(output).toMatchInlineSnapshot(`"[30m[101mblack on bright red background[49m[39m"`)
     })
 
     test('passing ornaments functions', () => {
@@ -54,7 +52,7 @@ export const ansi_codes = (): void =>
 
       // `"[102;37mwhite on bright green and [3m[1mitalic, bold and white on bright green background[0m"`
       expect(output).toMatchInlineSnapshot(
-        `"[102;37mwhite on bright green and [3m[1mitalic, bold and white on bright green background[49,39m"`
+        `"[37m[102mwhite on bright green and [3m[1mitalic, bold and white on bright green background[22m[23m[49m[39m"`
       )
     })
 
@@ -68,7 +66,7 @@ export const ansi_codes = (): void =>
 
       // `"[101;30m[3mitalic and black on bright red background with some [2mdim[22m and [7minverse[27m text.[0m"`
       expect(output).toMatchInlineSnapshot(
-        `"[101;30m[3mitalic and black on bright red background with some [2mdim[22m and [7minverse[27m text.[49,39m"`
+        `"[30m[101m[3mitalic and black on bright red background with some [2mdim[22m and [7minverse[27m text.[23m[49m[39m"`
       )
     })
 

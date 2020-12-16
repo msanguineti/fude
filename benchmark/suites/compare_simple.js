@@ -1,6 +1,15 @@
 const b = require('benny')
 const fude = require('fude')
 
+const saveTests = (bench) => {
+  return process.env.SAVE_BENCHMARKS
+    ? [
+        b.save({ file: 'compare_simple_rendering', format: 'chart.html' }),
+        b.save({ file: 'compare_simple_rendering', format: 'csv' }),
+      ]
+    : []
+}
+
 b.suite(
   'Rendering a simple string',
 
@@ -23,6 +32,5 @@ b.suite(
 
   b.cycle(),
   b.complete(),
-  b.save({ file: 'compare_simple_rendering', format: 'chart.html' }),
-  b.save({ file: 'compare_simple_rendering', format: 'csv' })
+  ...saveTests(b)
 )
