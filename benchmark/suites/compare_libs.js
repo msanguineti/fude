@@ -26,6 +26,15 @@ if (
   const addTests = (bench) =>
     Object.keys(modules).map((id) => bench.add(id, () => test(modules[id])))
 
+  const saveTests = (bench) => {
+    return process.env.SAVE_BENCHMARKS
+      ? [
+          bench.save({ file: 'compare_libs_rendering', format: 'chart.html' }),
+          bench.save({ file: 'compare_libs_rendering', format: 'csv' }),
+        ]
+      : []
+  }
+
   module.exports = b.suite(
     'Compare libs string rendering',
 
@@ -33,7 +42,6 @@ if (
 
     b.cycle(),
     b.complete(),
-    b.save({ file: 'compare_libs_rendering', format: 'chart.html' }),
-    b.save({ file: 'compare_libs_rendering', format: 'csv' })
+    ...saveTests(b)
   )
 }
