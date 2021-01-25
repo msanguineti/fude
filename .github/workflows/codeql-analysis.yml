@@ -23,7 +23,6 @@ on:
 
 jobs:
   analyze:
-    if: github.actor != 'dependabot[bot]'
     name: Analyze
     runs-on: ubuntu-latest
 
