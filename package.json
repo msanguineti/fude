@@ -5,6 +5,9 @@
   "main": "lib/index.js",
   "module": "lib/index.mjs",
   "types": "lib/index.d.ts",
+  "engines": {
+    "node": ">=12"
+  },
   "exports": {
     ".": {
       "import": "./lib/index.mjs",
