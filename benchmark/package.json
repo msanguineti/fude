@@ -4,10 +4,10 @@
     "ansi-colors": "^4.1.1",
     "benchmark": "^2.1.4",
     "benny": "^3.6.15",
-    "chalk": "^4.1.0",
-    "colorette": "^1.2.1",
+    "chalk": "^4.1.2",
+    "colorette": "^2.0.12",
     "colors": "^1.4.0",
     "fude": "file:..",
-    "kleur": "^4.1.3"
+    "kleur": "^4.1.4"
   }
 }

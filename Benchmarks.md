@@ -1,5 +1,7 @@
 # Who's comparing? <!-- omit in toc -->
 
+> Updated @ 30th Sep. 2021
+
 Let's compare `fude`'s modus operandi first, then, let's see how it stacks against some other libraries.
 
 - [Simple strings](#simple-strings)
@@ -152,16 +154,16 @@ Using functions (which seems the only way supported by every library) we see tha
 
 Let's load a library 1000 times and see what's the average loading time:
 
-| library       | time      |
-| ------------- | --------- |
-| 'fude'        | '0.653ms' |
-| 'chalk'       | '1.965ms' |
-| 'kleur'       | '0.326ms' |
-| 'colorette'   | '0.333ms' |
-| 'ansi-colors' | '0.976ms' |
-| 'colors'      | '4.48ms'  |
+| library     | time    |
+| ----------- | ------- |
+| fude        | 0.846ms |
+| chalk       | 2.768ms |
+| kleur       | 0.443ms |
+| colorette   | 0.746ms |
+| ansi-colors | 1.395ms |
+| colors      | 4.705ms |
 
-Well, `colorette` and `kleur` are fast... but the libraries are smaller than the rest as well. `chalk` is choke-full of features, hence you pay for those (they could split the lib, tho).
+Well, `kleur` is fast... but the library is smaller than the rest as well. `chalk` is choke-full of features, hence you pay for those. `colors`? unmaintenaid.
 
 ## Template literals handling
 
@@ -169,12 +171,12 @@ Well, `colorette` and `kleur` are fast... but the libraries are smaller than the
 bgRed`${white`筆`}` + bgWhite` ${black`fude`} `
 ```
 
-Only `fude` and `chalk` are correctly handling template literals (as of November 2020)
+Only `fude` and `chalk` are correctly handling template literals.
 
 ![template handling](media/template_literals.png)
 
-[chalk]: https://npmjs.com/package/chalk
-[kleur]: https://npmjs.com/package/kleur
-[colorette]: https://npmjs.com/package/colorette
-[ansi_colors]: https://npmjs.com/package/ansi-colors
-[colors]: https://npmjs.com/package/colors
+[chalk]: https://npmjs.com/package/chalk/v/4.1.2
+[kleur]: https://npmjs.com/package/kleur/v/4.1.4
+[colorette]: https://npmjs.com/package/colorette/v/2.0.12
+[ansi_colors]: https://npmjs.com/package/ansi-colors/v/4.1.1
+[colors]: https://npmjs.com/package/colors/v/1.4.0
