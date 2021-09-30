@@ -162,7 +162,7 @@ const applyRGB = (
 ): string =>
   enabled
     ? hitchi(
-        (`${open};${2};${r};${g};${b}` as unknown) as number,
+        `${open};${2};${r};${g};${b}` as unknown as number,
         close
       )(text as string)
     : (text as string)
