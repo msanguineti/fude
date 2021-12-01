@@ -60,7 +60,7 @@
   "author": "Mirco Sanguineti",
   "license": "MIT",
   "devDependencies": {
-    "@commitlint/cli": "^13.2.0",
+    "@commitlint/cli": "^15.0.0",
     "@commitlint/config-conventional": "^13.2.0",
     "@types/jest": "^27.0.2",
     "@types/node": "^16.10.2",
