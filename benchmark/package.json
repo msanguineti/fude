@@ -3,7 +3,7 @@
   "dependencies": {
     "ansi-colors": "^4.1.1",
     "benchmark": "^2.1.4",
-    "benny": "^3.6.15",
+    "benny": "^3.7.1",
     "chalk": "^5.0.0",
     "colorette": "^2.0.16",
     "colors": "^1.4.0",
