@@ -10,6 +10,16 @@ updates:
       - "dependencies"
       - "npm"
       - "automerge"
+  - package-ecosystem: npm
+    directory: '/benchmark'
+    schedule:
+      interval: daily
+    open-pull-requests-limit: 10
+    versioning-strategy: increase
+    labels:
+      - "dependencies_benchmarks"
+      - "npm"
+      - "automerge"
   - package-ecosystem: github-actions
     directory: '/'
     schedule:
