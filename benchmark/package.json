@@ -4,7 +4,7 @@
     "ansi-colors": "^4.1.1",
     "benchmark": "^2.1.4",
     "benny": "^3.7.1",
-    "chalk": "^5.0.0",
+    "chalk": "^5.0.1",
     "colorette": "^2.0.16",
     "colors": "^1.4.0",
     "fude": "file:..",
