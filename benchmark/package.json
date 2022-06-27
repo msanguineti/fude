@@ -8,6 +8,6 @@
     "colorette": "^2.0.16",
     "colors": "^1.4.0",
     "fude": "file:..",
-    "kleur": "^4.1.4"
+    "kleur": "^4.1.5"
   }
 }
