@@ -26,7 +26,6 @@
     "lint": "tsc --noEmit && eslint --cache --fix src/index.ts",
     "format": "prettier --write src",
     "test": "jest",
-    "test:ci": "jest __tests__/ci.js",
     "prepare": "husky install"
   },
   "devDependencies": {
