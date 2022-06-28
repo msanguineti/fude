@@ -1,21 +1,28 @@
 module.exports = {
   env: {
-    es2017: true,
+    es2019: true,
     node: true,
-    jest: true,
   },
   extends: [
     'eslint:recommended',
     'plugin:@typescript-eslint/recommended',
-
+    'plugin:@typescript-eslint/recommended-requiring-type-checking',
+    'plugin:@typescript-eslint/strict',
+    'plugin:functional/external-recommended',
+    'plugin:functional/recommended',
+    'plugin:functional/stylistic',
+    'plugin:unicorn/recommended',
     'prettier',
   ],
   parser: '@typescript-eslint/parser',
   parserOptions: {
-    ecmaVersion: 8,
+    ecmaVersion: 'latest',
     sourceType: 'module',
-    project: 'tsconfig.json',
+    tsconfigRootDir: '.',
+    project: ['./tsconfig.json'],
   },
-  plugins: ['@typescript-eslint'],
-  rules: {},
+  plugins: ['@typescript-eslint', 'functional', 'unicorn'],
+  rules: {
+    //'functional/no-expression-statement': ['error', { ignoreVoid: true }],
+  },
 }

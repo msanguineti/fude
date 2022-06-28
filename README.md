@@ -1,4 +1,4 @@
-# ![fude](media/fude-logo.png) <!-- omit in toc -->
+# ![fude](media/fude-logo.png)
 
 > [nodejs][nodejs] library for terminal text style formatting.
 
@@ -13,50 +13,20 @@
 ![Node.js CI][badge_nodejs_ci]
 ![CodeQL][badge_codeql]
 
-## Features <!-- omit in toc -->
+## Features
 
 - Fast loading, fast performing
-- ANSI Codes complete
-- 100% tree-shakeable by design
-- Template literals friendly
-- Font modifiers
+- [`NO_COLOR`][no_color] friendly
+- TypeScript support (types included)
+- Automatic color detection
+- Overrideable color support (e.g. stdout, stderr, etc.)
+- No dependencies
+- 8-bit, 24-bit color support
+- Proper `bold`, `dim` support
+- Proper `reset` support (optional with env variable or argument flag)
+- Tagged template literals support (with helper library)
 
-![ornaments](media/text_ornaments.gif)
-
-- Foreground colors (normal & bright)
-
-![fg_colors](media/foreground_colors.png)
-
-- Background colors (normal & bright)
-
-![bg_colors](media/background_colors.png)
-
-## Table of contents <!-- omit in toc -->
-
-- [Install](#install)
-- [Usage](#usage)
-  - [TTY capabilities](#tty-capabilities)
-- [API](#api)
-  - [`fude(string, ...<ornament>)`](#fudestring-ornament)
-  - [`fude.<ornament>(string|<ornament>())`](#fudeornamentstringornament)
-  - [Tagged template literals](#tagged-template-literals)
-- [Ornaments](#ornaments)
-  - [Note on terminal capabilities](#note-on-terminal-capabilities)
-- [RGB & HEX](#rgb--hex)
-  - [`fude.rgb(string|<ornament>, {r:number, g:number, b:number})`](#fudergbstringornament-rnumber-gnumber-bnumber)
-  - [`fude.hex(string|<ornament>, hex:number)`](#fudehexstringornament-hexnumber)
-  - [`fude.rgbBg(string|<ornament>, {r:number, g:number, b:number})`](#fudergbbgstringornament-rnumber-gnumber-bnumber)
-  - [`fude.hexBg(string|<ornament>, hex:number)`](#fudehexbgstringornament-hexnumber)
-  - [`fude.rgbUnderline(string|<ornament>, {r:number, g:number, b:number, double?:boolean})`](#fudergbunderlinestringornament-rnumber-gnumber-bnumber-doubleboolean)
-  - [`fude.hexUnderline(string|<ornament>, hex:number, double?:boolean)`](#fudehexunderlinestringornament-hexnumber-doubleboolean)
-- [ANSI SGR Parameters Codes](#ansi-sgr-parameters-codes)
-  - [`fude.ansi(string|<ornament>, ...number)`](#fudeansistringornament-number)
-- [TypeScript](#typescript)
-- [What's in a name?](#whats-in-a-name)
-- [Benchmarks](#benchmarks)
-- [Changelog](#changelog)
-- [Contributing](#contributing)
-- [Authors and license](#authors-and-license)
+> ATTENTION: version 3.0.0 BREAKS backward compatibility with previous versions!
 
 ## Install
 
@@ -66,203 +36,179 @@ $ npm i fude
 
 ## Usage
 
-```js
-import { fude, white, black, bgRed, bgWhite } from 'fude'
+Import `fude` the way you need it:
 
-console.log(fude('筆', bgRed, white) + fude(' fude ', bgWhite, black))
-
-// alternatively...
-
+```ts
+import { bgRed, white, bgWhite, black } from 'fude'
 console.log(bgRed(white`筆`) + bgWhite(black` fude `))
-
-// ...template literals
-
-console.log(bgRed`${white`筆`}` + bgWhite`${black` fude `}`)
-
-// nesting (same result, slightly different intentions with the backgrounds)...
-
-console.log(bgRed(white('筆') + bgWhite(` ${black('fude')} `)))
-
-// template literals (also nested)...
-
-console.log(bgRed`${white`筆`}${bgWhite` ${black`fude`} `}`)
 ```
-
-### TTY capabilities
-
-To check what your TTY is capable of, call this handy function:
 
 ```js
-import { ttyCapability } from 'fude'
-
-console.log(ttyCapability())
+const { bgRed, white, bgWhite, black } = require('fude')
+console.log(bgRed(white`筆`) + bgWhite(black` fude `))
 ```
-
-## API
-
-### `fude(string, ...<ornament>)`
-
-Example:
 
 ```js
-import { fude, bgWhite, red } from 'fude'
-
-let output = fude('red text on white background', red, bgWhite)
+import fude from 'fude'
+console.log(fude.bgRed(fude.white`筆`) + fude.bgWhite(fude.black` fude `))
 ```
-
-### `fude.<ornament>(string|<ornament>())`
-
-Example:
 
 ```js
-import { bgWhite, red } from 'fude'
-
-let output = bgWhite(red('red text on white background'))
+const fude = require('fude')
+console.log(fude.bgRed(fude.white`筆`) + fude.bgWhite(fude.black` fude `))
 ```
 
-### Tagged template literals
+## Styles
 
-Example:
+Character styles applicable to text.
 
-```js
-import { bgWhite, red, blue } from 'fude'
+| Modifiers       | Fg colors (normal) | Fg colors (bright) | Bg colors (normal) | Bg colors (bright) |
+| --------------- | ------------------ | ------------------ | ------------------ | ------------------ |
+| `reset`         | `black`            | `blackBright`      | `bgBlack`          | `bgBlackBright`    |
+| `bold`          | `red`              | `redBright`        | `bgRed`            | `bgRedBright`      |
+| `dim`           | `green`            | `greenBright`      | `bgGreen`          | `bgGreenBright`    |
+| `italic`        | `yellow`           | `yellowBright`     | `bgYellow`         | `bgYellowBright`   |
+| `underline`     | `blue`             | `blueBright`       | `bgBlue`           | `bgBlueBright`     |
+| `inverse`       | `magenta`          | `magentaBright`    | `bgMagenta`        | `bgMagentaBright`  |
+| `hidden`        | `cyan`             | `cyanBright`       | `bgCyan`           | `bgCyanBright`     |
+| `strikethrough` | `white`            | `whiteBright`      | `bgWhite`          | `bgWhiteBright`    |
+|                 |                    |                    |                    |                    |
 
-let output1 = `${red`red text`} and ${bgWhite`${blue`blue text on white background`}`}`
+> `blackBright` is also `gray` or `grey` \
+> `bgBlackBright` is also `bgGray` or `bgGrey`
 
-let output2 =
-  `${red`red text`}` +
-  ' and ' +
-  `${bgWhite(blue`blue text on white background`)}`
-
-// output1 === output2
-```
-
-## Ornaments
-
-Character ornaments (styles) applicable to text.
-
-- Modifiers
-- Foreground Colors
-- Background Colors
-
-| Modifiers         | Fg colors (normal) | Fg colors (bright) | Bg colors (normal) | Bg colors (bright) |
-| ----------------- | ------------------ | ------------------ | ------------------ | ------------------ |
-| `bold`            | `black`            | `gray`             | `bgBlack`          | `bgGray`           |
-| `dim`             | `red`              | `brightRed`        | `bgRed`            | `bgBrightRed`      |
-| `italic`          | `green`            | `brightGreen`      | `bgGreen`          | `bgBrightGreen`    |
-| `underline`       | `yellow`           | `brightYellow`     | `bgYellow`         | `bgBrightYellow`   |
-| `doublyUnderline` | `blue`             | `brightBlue`       | `bgBlue`           | `bgBrightBlue`     |
-| `blinkSlow`       | `magenta`          | `brightMagenta`    | `bgMagenta`        | `bgBrightMagenta`  |
-| `blinkFast`       | `cyan`             | `brightCyan`       | `bgCyan`           | `bgBrightCyan`     |
-| `inverse`         | `white`            | `brightWhite`      | `bgWhite`          | `bgBrightWhite`    |
-| `hide`            |                    |                    |                    |                    |
-| `strikethrough`   |                    |                    |                    |                    |
-
-### Note on terminal capabilities
-
-1. Exact colors values are dependant on the terminal implementation.
-
-2. Not all modifiers are available on every terminal.
-
-(check your [terminal capabilities](#tty-capabilities))
-
-## RGB & HEX
-
-In terminals able to display 16 million colors (welcome to the future) you can have foreground or background colors defined by their RGB or HEX values. **Also underlines with different colors than text!**
-
-HEX values are accepted starting with or without `#`, both short form `FFF` and long form `FFFFFF`.
-
-### `fude.rgb(string|<ornament>, {r:number, g:number, b:number})`
-
-### `fude.hex(string|<ornament>, hex:number)`
-
-### `fude.rgbBg(string|<ornament>, {r:number, g:number, b:number})`
-
-### `fude.hexBg(string|<ornament>, hex:number)`
-
-### `fude.rgbUnderline(string|<ornament>, {r:number, g:number, b:number, double?:boolean})`
-
-### `fude.hexUnderline(string|<ornament>, hex:number, double?:boolean)`
+## 8-bit and 24-bit color support
 
 Examples:
 
 ```js
-import { rgb, hexBg, rgbUnderline, black, bold, red } from 'fude'
+import f from 'fude'
 
-console.log(rgb('tomato text', { r: 255, g: 99, b: 71 }))
+console.log(f.ansi256(9)('red'))
 
-console.log(hexBg('mustard background', '#FFBF47'))
+console.log(f.rgb(255, 99, 71)('tomato text'))
 
-// this will underline the text and apply the given color to the underline only
-console.log(
-  `${rgbBg('You have misspelt:', { g: 128 })} ${rgbUnderline(
-    black(bold('buisness')),
-    255,
-    50,
-    50
-  )}`
-)
-
-console.log(`
-  Q: 1 + 1
-  
-  A: ${hexUnderline('3', 'F00', true)} ${bold(red('Bad Error!!!'))}`)
+console.log(f.hexBg('#FFBF47')('mustard background'))
 ```
 
-![rgb_examples](media/rgb_hex_examples.png)
+## Color support override
 
-## ANSI SGR Parameters Codes
+### Programmatically
 
-It is possible to call directly the ANSI [SGR Parameters][sgr_params] codes:
-
-### `fude.ansi(string|<ornament>, ...number)`
-
-Example:
+It is possible to override the automatic detection of the color support level. This might be useful for when piping the output to a file, or splitting the `stderr` and `stdout` streams.
 
 ```js
-import * as fude from 'fude'
+import f from 'fude'
 
-fude.ansi('This text is black on green background', 42, 30)
+const noColors = f.Fude({ level: 0 }) // color support levels: 0 none, 1 basic, 2 ANSI 256, 3 Truecolor
 
-// or composing with ornaments
+console.log(f.red('red text!')) // in red
 
-ansi(
-  'white on green and ' +
-    italic(bold('italic, bold and white on green background')),
-  42,
-  30
-)
+console.log(noColors.red('red text?')) // nope, text is plain
+
+const errorStream = f.Fude({ level: 'stderr' }) // get the support level of `stderr` or `stdout`
+
+console.error(errorStream.red('Error!')) // this will be red only if stderr supports colors
 ```
 
-As a convenience, it is possible to use [ornaments](#ornaments) by appending `Code` to their name:
+### Environment variables
+
+`FORCE_COLOR` can be used to override the automatic detection of the color support level. (see [NodeJS TTY][nodetty])
+
+Valid values are:
+
+- `0`: Switch off color support
+- `1`: Basic color support
+- `2`: ANSI 256 color support
+- `3`: Truecolor color support
+
+**Any other value will be treated as `0`**
+
+```sh
+# color support set to basic colors
+FORCE_COLOR=1 node example.js
+```
+
+`NO_COLOR` (also `NODE_DISABLE_COLORS`) can be used to switch off the color support.
+
+```sh
+# color support set to none
+NO_COLOR= node example.js
+```
+
+> `FORCE_COLOR` overrides both `NO_COLOR` and `NODE_DISABLE_COLORS`
+
+### CLI Arguments `--color[=0|1|2|3]` and `--no-color`
+
+```sh
+# --color without a value will set color support to auto detection (the default)
+$ node example.js --color
+# color support set to none
+$ node example.js --no-color
+# color support set to truecolor
+$ node example.js --color=3
+```
+
+## Proper `bold` and `dim` support
+
+Given a string like this (with embedded `dim`s and `bold`s)
 
 ```js
-import { ansi, bgGreenCode, blackCode } from 'fude'
+import c from 'fude' // 'chalk', 'colorette', 'picocolors' or 'kleur'
 
-ansi('This text is black on green background', bgGreenCode, blackCode)
+const output =
+  c.dim(' dim ' + c.bold(' bold ') + ' dim ') +
+  c.bold(' bold ' + c.dim(' dim ') + ' bold ')
 ```
 
-## TypeScript
+We get these results:
 
-TypeScript types are included.
+![fude](media/bold_dim.png)
+
+> `fude` handles `bold` and `dim` properly by default.
+
+## Proper `reset` support
+
+`fude` does not properly handle reset by default. This is the behaviour of every other CLI text styling library. The reason is that the check for reset is expensive, and it is not necessary for most cases.
+
+To fix this, you can use the env variable `HANDLE_RESET` or the argument flag `--handle-reset`.
+
+```sh
+# handle reset
+HANDLE_RESET= node example.js
+
+# handle reset
+node example.js --handle-reset
+```
+
+This is what I mean by properly handling `reset`:
+
+![fude](media/reset.png)
+
+## Tagged Template Literals
+
+Tagged template literals are supported with a helper library such as [colorize-template][colorize-template].
+
+```js
+import fude from 'fude'
+import { createColorize } from 'colorize-template'
+
+const colorize = createColorize(fude)
+
+console.log(colorize`{bgRed {white 筆}}{bgWhite ${fude.rgb(0, 0, 0)('fude ')}}`)
+```
 
 ## What's in a name?
 
 [**Fude**][ink_brush] (筆 - Japanese pronunciation: [[ɸɯ̟ᵝde̞][ipa]] foo-de -- **de** as in **de**ntist) is Japanese for a calligraphy brush. Since there isn't really a plural form in Japanese, in this case 'fude' can be interpreted as 'brushes'.
 
-The idea is that you use a different brush for a different style of stroke (or color). Here you have different font styles and foreground/background colors.
+## Thanks & Credits
 
-```js
-fude('筆', bgRed, white)
-```
+Thanks to the authors of and contributors to [`colorette`][colorette] and [`picocolors`][picocolors] for their work which I have borrowed heavily to improve performance in v3.0.
 
-This means, I want to use this set of brushes (`bgRed` and `white`) to compose the given text: `筆`.
+Also, thanks to [`chalk`][chalk] because it is always the slowest and everyone badmouths it, but it has a gazillion of installations and everyone envies it.
 
-## Benchmarks
-
-For an analysis of how well `fude` stacks against other libraries as well as which is the fastest way to render a string with `fude`, refer to [benchmarks](Benchmarks.md).
-
-**Spoiler alert** `fude` is fast.
+Benchmarks? Every CLI text styling library has its own benchmarks and it is always the fastest... go figure.
 
 ## Changelog
 
@@ -270,7 +216,7 @@ The changelog can be found on the [Releases page][releases].
 
 ## Contributing
 
-Everyone is welcome to contribute. Please take a moment to review the [contributing guidelines](Contributing.md).
+PRs welcomed here.
 
 ## Authors and license
 
@@ -297,3 +243,9 @@ MIT License, see the included [LICENCE](LICENCE) file.
 [ipa]: https://en.wikipedia.org/wiki/Help:IPA/Japanese
 [sgr_params]: (https://en.wikipedia.org/wiki/ANSI_escape_code#SGR_parameters)
 [fude]: https://npmjs.com/package/fude
+[nodetty]: https://nodejs.org/docs/latest-v14.x/api/tty.html#tty_writestream_getcolordepth_env
+[colorette]: https://npmjs.com/package/colorette
+[picocolors]: https://npmjs.com/package/picocolors
+[chalk]: https://npmjs.com/package/chalk
+[no_color]: https://no-color.org/
+[colorize-template]: https://npmjs.com/package/colorize-template

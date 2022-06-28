@@ -24,7 +24,7 @@ npm test
 Or run tests in watch mode:
 
 ```sh
-npm run test:watch
+npm run test -- --watch
 ```
 
 **Don’t forget to add tests and update documentation for your changes.**
@@ -32,22 +32,10 @@ npm run test:watch
 Check coverage:
 
 ```sh
-npm run test:coverage
+npm run test -- --coverage
 ```
 
 **Please, strive for 100% coverage -- I know 100% is not technically necessary, but...**
-
-Run benchmarks:
-
-```sh
-npm run benchmarks
-```
-
-Benchmarks are run with [`benny`](https://npmjs.com/package/benny).
-
-**If benchmarks have changed significantly, update the relevant parts in the documentation!**
-
-**Please update npm lock file (`package-lock.json`) if you add or update dependencies.**
 
 ## Other notes
 
