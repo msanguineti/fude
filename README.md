@@ -233,7 +233,6 @@ MIT License, see the included [LICENCE](LICENCE) file.
 [badge_npm_dt]: https://badgen.net/npm/dt/fude
 [badge_npm_license]: https://badgen.net/npm/license/fude
 [badge_npm_types]: https://badgen.net/npm/types/fude
-[badge_bundle_tree]: https://badgen.net/bundlephobia/tree-shaking/fude
 [badge_size]: https://badgen.net/packagephobia/install/fude
 [badge_coveralls]: https://badgen.net/coveralls/c/github/msanguineti/fude/main
 [badge_dependabot]: https://badgen.net/github/dependabot/msanguineti/fude
