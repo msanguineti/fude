@@ -6,7 +6,6 @@
 ![npm_dt][badge_npm_dt]
 ![npm_license][badge_npm_license]
 ![npm_types][badge_npm_types]
-![bundle_tree][badge_bundle_tree]
 ![size][badge_size]
 ![coveralls][badge_coveralls]
 ![dependabot][badge_dependabot]
