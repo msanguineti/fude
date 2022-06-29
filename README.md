@@ -122,7 +122,7 @@ Valid values are:
 - `2`: ANSI 256 color support
 - `3`: Truecolor color support
 
-**Any other value will be treated as `0`**
+**Any other value will be ignored (switch on auto color detection).**
 
 ```sh
 # color support set to basic colors

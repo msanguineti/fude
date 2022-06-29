@@ -1,6 +1,6 @@
 {
   "name": "fude",
-  "version": "2.0.0",
+  "version": "3.0.0",
   "description": "Node.js library for terminal text style formatting",
   "keywords": [
     "terminal",
@@ -40,7 +40,7 @@
     "eslint-plugin-functional": "^4.2.1",
     "eslint-plugin-unicorn": "^42.0.0",
     "husky": "^8.0.1",
-    "jest": "^28.1.1",
+    "jest": "^28.1.2",
     "lint-staged": "^13.0.3",
     "prettier": "^2.7.1",
     "rimraf": "^3.0.2",
