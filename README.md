@@ -6,7 +6,6 @@
 ![npm_dt][badge_npm_dt]
 ![npm_license][badge_npm_license]
 ![npm_types][badge_npm_types]
-![bundle_tree][badge_bundle_tree]
 ![size][badge_size]
 ![coveralls][badge_coveralls]
 ![dependabot][badge_dependabot]
@@ -233,7 +232,6 @@ MIT License, see the included [LICENCE](LICENCE) file.
 [badge_npm_dt]: https://badgen.net/npm/dt/fude
 [badge_npm_license]: https://badgen.net/npm/license/fude
 [badge_npm_types]: https://badgen.net/npm/types/fude
-[badge_bundle_tree]: https://badgen.net/bundlephobia/tree-shaking/fude
 [badge_size]: https://badgen.net/packagephobia/install/fude
 [badge_coveralls]: https://badgen.net/coveralls/c/github/msanguineti/fude/main
 [badge_dependabot]: https://badgen.net/github/dependabot/msanguineti/fude
