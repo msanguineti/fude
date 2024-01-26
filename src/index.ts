@@ -35,7 +35,7 @@ const replaceSequence = (
   string: string,
   sequence: string,
   replace: string,
-  index = string.indexOf(sequence)
+  index = string.indexOf(sequence),
 ): string =>
   index === -1
     ? string
@@ -47,7 +47,7 @@ const wrap = (
   string: string,
   open: string,
   close: string,
-  index = string.indexOf(close, open.length)
+  index = string.indexOf(close, open.length),
 ) =>
   index === -1
     ? open + string + close
@@ -59,7 +59,7 @@ const formatReset = (open: string, close: string) => (text: string | number) =>
   wrap(
     replaceSequence(String(text), resetClose, resetClose + open),
     open,
-    close
+    close,
   )
 
 const format = (open: string, close: string) => (text: string | number) =>
@@ -73,7 +73,7 @@ const handleReset = hasReset ? formatReset : format
 
 const initSupport = (
   useColor: boolean,
-  function_: (text: string | number) => string
+  function_: (text: string | number) => string,
 ) => (useColor ? function_ : String)
 
 const initFgColors = (useColor = colorSupportLevel >= 1) => ({
@@ -136,26 +136,26 @@ const initBgColors = (useColor = colorSupportLevel >= 1) => ({
   bgGrey: initSupport(useColor, handleReset(`\u001B[100m`, `\u001B[49m`)),
   bgBlackBright: initSupport(
     useColor,
-    handleReset(`\u001B[100m`, `\u001B[49m`)
+    handleReset(`\u001B[100m`, `\u001B[49m`),
   ),
   bgRedBright: initSupport(useColor, handleReset(`\u001B[101m`, `\u001B[49m`)),
   bgGreenBright: initSupport(
     useColor,
-    handleReset(`\u001B[102m`, `\u001B[49m`)
+    handleReset(`\u001B[102m`, `\u001B[49m`),
   ),
   bgYellowBright: initSupport(
     useColor,
-    handleReset(`\u001B[103m`, `\u001B[49m`)
+    handleReset(`\u001B[103m`, `\u001B[49m`),
   ),
   bgBlueBright: initSupport(useColor, handleReset(`\u001B[104m`, `\u001B[49m`)),
   bgMagentaBright: initSupport(
     useColor,
-    handleReset(`\u001B[105m`, `\u001B[49m`)
+    handleReset(`\u001B[105m`, `\u001B[49m`),
   ),
   bgCyanBright: initSupport(useColor, handleReset(`\u001B[106m`, `\u001B[49m`)),
   bgWhiteBright: initSupport(
     useColor,
-    handleReset(`\u001B[107m`, `\u001B[49m`)
+    handleReset(`\u001B[107m`, `\u001B[49m`),
   ),
 })
 
@@ -188,15 +188,15 @@ export const {
 const initModifiers = (enabled = colorSupportLevel >= 1) => ({
   reset: initSupport(
     enabled,
-    (text: string | number) => `\u001B[0m${text}${resetClose}`
+    (text: string | number) => `\u001B[0m${text}${resetClose}`,
   ),
   bold: initSupport(
     enabled,
-    handleReset(`\u001B[22m\u001B[1m`, `\u001B[2m\u001B[22m`)
+    handleReset(`\u001B[22m\u001B[1m`, `\u001B[2m\u001B[22m`),
   ),
   dim: initSupport(
     enabled,
-    handleReset(`\u001B[22m\u001B[2m`, `\u001B[2m\u001B[22m`)
+    handleReset(`\u001B[22m\u001B[2m`, `\u001B[2m\u001B[22m`),
   ),
   italic: initSupport(enabled, handleReset(`\u001B[3m`, `\u001B[23m`)),
   underline: initSupport(enabled, handleReset(`\u001B[4m`, `\u001B[24m`)),
@@ -261,7 +261,7 @@ const hexToRGB = (enabled: string) =>
         .map((x) => Number.parseInt(x + x, 16)) as unknown as readonly [
         number,
         number,
-        number
+        number,
       ])
     : (/^#?([\da-f]{2})([\da-f]{2})([\da-f]{2})$/i
         .exec(enabled)
@@ -269,7 +269,7 @@ const hexToRGB = (enabled: string) =>
         .map((x) => Number.parseInt(x, 16)) as unknown as readonly [
         number,
         number,
-        number
+        number,
       ])
 
 const initHex = (enabled = colorSupportLevel >= 3) => ({
@@ -277,14 +277,14 @@ const initHex = (enabled = colorSupportLevel >= 3) => ({
     enabled
       ? handleReset(
           `\u001B[38;2;${hexToRGB(hexString).join(';')}m`,
-          `\u001B[39m`
+          `\u001B[39m`,
         )
       : String,
   bgHex: (hexString: string) =>
     enabled
       ? handleReset(
           `\u001B[48;2;${hexToRGB(hexString).join(';')}m`,
-          `\u001B[49m`
+          `\u001B[49m`,
         )
       : String,
 })
@@ -303,9 +303,9 @@ export const { hex, bgHex } = initHex()
  */
 export const Fude = ({
   level,
-}: {
-  readonly level: ColorSupportLevel | 'stdout' | 'stderr'
-}) => {
+}: Readonly<{
+  level: ColorSupportLevel | 'stdout' | 'stderr'
+}>) => {
   const support =
     typeof level === 'number' ? level : autoDetectColorSupport(level)
 

@@ -1,6 +1,6 @@
 module.exports = {
   env: {
-    es2019: true,
+    es2022: true,
     node: true,
   },
   extends: [
@@ -8,7 +8,7 @@ module.exports = {
     'plugin:@typescript-eslint/recommended',
     'plugin:@typescript-eslint/recommended-requiring-type-checking',
     'plugin:@typescript-eslint/strict',
-    'plugin:functional/external-recommended',
+    'plugin:functional/external-vanilla-recommended',
     'plugin:functional/recommended',
     'plugin:functional/stylistic',
     'plugin:unicorn/recommended',

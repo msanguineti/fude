@@ -9,7 +9,7 @@ describe('Fude CLI colorization/formatting', () => {
       (process.stdout?.getColorDepth
         ? process.stdout.getColorDepth()
         : 0 >> 2) & 15,
-      3
+      3,
     )
     // make sure no environment variables are set before running tests
     delete process.env.FORCE_COLOR
@@ -67,7 +67,7 @@ describe('Fude CLI colorization/formatting', () => {
 
     it('should wrap the embedded color function with escape codes', () => {
       expect(fude.red(fude.red('red'))).toEqual(
-        '\u001B[31m\u001B[31mred\u001B[31m\u001B[39m'
+        '\u001B[31m\u001B[31mred\u001B[31m\u001B[39m',
       )
     })
 
@@ -127,7 +127,7 @@ describe('Fude CLI colorization/formatting', () => {
       process.env.FORCE_COLOR = '3'
       const fude = require('../dist')
       expect(fude.rgb(255, 0, 0)('text')).toEqual(
-        '\u001B[38;2;255;0;0mtext\u001B[39m'
+        '\u001B[38;2;255;0;0mtext\u001B[39m',
       )
     })
 
@@ -135,7 +135,7 @@ describe('Fude CLI colorization/formatting', () => {
       process.env.FORCE_COLOR = '3'
       const fude = require('../dist')
       expect(fude.bgRgb(255, 0, 0)('text')).toEqual(
-        '\u001B[48;2;255;0;0mtext\u001B[49m'
+        '\u001B[48;2;255;0;0mtext\u001B[49m',
       )
     })
 
@@ -165,7 +165,7 @@ describe('Fude CLI colorization/formatting', () => {
       process.env.FORCE_COLOR = '3'
       const fude = require('../dist')
       expect(fude.hex('#123')('text')).toEqual(
-        '\u001B[38;2;17;34;51mtext\u001B[39m'
+        '\u001B[38;2;17;34;51mtext\u001B[39m',
       )
     })
 
@@ -173,7 +173,7 @@ describe('Fude CLI colorization/formatting', () => {
       process.env.FORCE_COLOR = '3'
       const fude = require('../dist')
       expect(fude.hex('#123456')('text')).toEqual(
-        '\u001B[38;2;18;52;86mtext\u001B[39m'
+        '\u001B[38;2;18;52;86mtext\u001B[39m',
       )
     })
 
@@ -181,7 +181,7 @@ describe('Fude CLI colorization/formatting', () => {
       process.env.FORCE_COLOR = '3'
       const fude = require('../dist')
       expect(fude.bgHex('123')('text')).toEqual(
-        '\u001B[48;2;17;34;51mtext\u001B[49m'
+        '\u001B[48;2;17;34;51mtext\u001B[49m',
       )
     })
 
@@ -189,7 +189,7 @@ describe('Fude CLI colorization/formatting', () => {
       process.env.FORCE_COLOR = '3'
       const fude = require('../dist')
       expect(fude.bgHex('123456')('text')).toEqual(
-        '\u001B[48;2;18;52;86mtext\u001B[49m'
+        '\u001B[48;2;18;52;86mtext\u001B[49m',
       )
     })
 
@@ -311,7 +311,7 @@ describe('Fude CLI colorization/formatting', () => {
       process.env.FORCE_COLOR = '1' // needed in CI
       const fude = require('../dist')
       expect(fude.red('text ' + fude.reset('text') + ' text')).toEqual(
-        '\u001B[31mtext \u001B[0mtext\u001B[m text\u001B[39m'
+        '\u001B[31mtext \u001B[0mtext\u001B[m text\u001B[39m',
       )
     })
 
@@ -320,7 +320,7 @@ describe('Fude CLI colorization/formatting', () => {
       process.env.HANDLE_RESET = 1
       const fude = require('../dist')
       expect(fude.red('text ' + fude.reset('text') + ' text')).toEqual(
-        '\u001B[31mtext \u001B[0mtext\u001B[m\u001B[31m text\u001B[39m'
+        '\u001B[31mtext \u001B[0mtext\u001B[m\u001B[31m text\u001B[39m',
       )
     })
   })
@@ -339,7 +339,7 @@ describe('Fude CLI colorization/formatting', () => {
 
       const level_3 = fude.Fude({ level: 3 })
       expect(level_3.rgb(255, 0, 0)('text')).toEqual(
-        '\u001B[38;2;255;0;0mtext\u001B[39m'
+        '\u001B[38;2;255;0;0mtext\u001B[39m',
       )
     })
 
@@ -369,11 +369,11 @@ describe('Fude CLI colorization/formatting', () => {
         const testCase = colorize`{bgRed {white 筆}}{bgWhite ${fude.rgb(
           0,
           0,
-          0
+          0,
         )(' fude ')}}`
 
         expect(testCase).toEqual(
-          '\u001B[41m\u001B[37m筆\u001B[39m\u001B[49m\u001B[47m\u001B[38;2;0;0;0m fude \u001B[39m\u001B[49m'
+          '\u001B[41m\u001B[37m筆\u001B[39m\u001B[49m\u001B[47m\u001B[38;2;0;0;0m fude \u001B[39m\u001B[49m',
         )
       })
     })
