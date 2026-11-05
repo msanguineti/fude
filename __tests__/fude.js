@@ -6,9 +6,9 @@ describe('Fude CLI colorization/formatting', () => {
   beforeAll(() => {
     // default colorDepth from stdout.getColorDepth()
     colorDepth = Math.min(
-      (process.stdout?.getColorDepth
-        ? process.stdout.getColorDepth()
-        : 0 >> 2) & 15,
+      ((process.stdout?.getColorDepth ? process.stdout.getColorDepth() : 0) >>
+        2) &
+        15,
       3,
     )
     // make sure no environment variables are set before running tests
@@ -357,25 +357,31 @@ describe('Fude CLI colorization/formatting', () => {
     })
   })
 
-  if (!process.env.CI) {
-    describe('template literals handling with helper lib', () => {
-      process.env.FORCE_COLOR = '3' // needed in CI
-      const fude = require('../dist')
-      it('should show awesomeness', () => {
-        const helper = require('colorize-template')
-
-        const colorize = helper.createColorize(fude)
-
-        const testCase = colorize`{bgRed {white 筆}}{bgWhite ${fude.rgb(
-          0,
-          0,
-          0,
-        )(' fude ')}}`
-
-        expect(testCase).toEqual(
-          '\u001B[41m\u001B[37m筆\u001B[39m\u001B[49m\u001B[47m\u001B[38;2;0;0;0m fude \u001B[39m\u001B[49m',
-        )
-      })
+  describe('template literals handling with helper lib', () => {
+    let fude
+    beforeAll(() => {
+      jest.resetModules()
+      process.env.FORCE_COLOR = '3'
+      fude = require('../dist')
     })
-  }
+
+    afterAll(() => {
+      process.env = { ...envVars }
+    })
+    it('should show awesomeness', () => {
+      const helper = require('colorize-template')
+
+      const colorize = helper.createColorize(fude)
+
+      const testCase = colorize`{bgRed {white 筆}}{bgWhite ${fude.rgb(
+        0,
+        0,
+        0,
+      )(' fude ')}}`
+
+      expect(testCase).toEqual(
+        '\u001B[41m\u001B[37m筆\u001B[39m\u001B[49m\u001B[47m\u001B[38;2;0;0;0m fude \u001B[39m\u001B[49m',
+      )
+    })
+  })
 })
