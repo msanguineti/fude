@@ -1,75 +1,93 @@
-# Contributing
+# Contributing to Fude
 
-Use Node.js 26 (`nvm use`) and install the locked development dependencies:
+Keep the library small, preserve its public behaviour, and justify additions by a concrete need.
+
+## Get started
+
+Use Node.js 26 and install the locked development dependencies:
 
 ```sh
+nvm use
 npm ci
 npm run test:package
 ```
 
-`test:package` builds and minifies the library, runs the native Node test suite,
-then installs the tarball in a temporary consumer and checks CommonJS, native ESM
-and TypeScript imports. The temporary consumer has no development dependencies.
+The package and CI support maintained LTS lines only: Node 22, 24 and 26. CI also checks Windows on Node 26. Update the engine range, matrix, `.nvmrc` and README when the supported lines change. Removing support for an existing runtime requires a major release; the current move from Node 18 to maintained LTS lines must ship in the next major version.
 
-For a quicker edit cycle:
+## Development commands
 
-```sh
-npm run check
-npm run build
-npm test
-npm test -- --watch
-```
+| Command | Purpose |
+| --- | --- |
+| `npm run check` | Check TypeScript without writing output. |
+| `npm run build` | Clean `dist`, compile TypeScript and minify JavaScript. |
+| `npm test` | Test the existing `dist` build with Node's test runner. |
+| `npm test -- --watch` | Watch tests; rebuild separately after source changes. |
+| `npm run verify` | Build and test the minified library. |
+| `npm run test:package` | Verify, pack and test an isolated package consumer. |
+| `npm run test:coverage` | Build readable JavaScript and report native coverage. |
+| `npm run clean` | Remove generated output. |
 
-Rebuild after changing `src/index.ts`; tests use `dist`. Native coverage runs the
-readable, unminified build so its line report is useful:
+Tests read `dist`, so rebuild after editing `src/index.ts`. Coverage leaves readable output in `dist`; run the normal build again to restore minified output. Generated files are ignored and should not be committed.
 
-```sh
-npm run test:coverage
-```
+`test:package` verifies the build, packs it without rebuilding, then installs the tarball in a temporary consumer. It checks the package contents, CommonJS and native ESM imports, TypeScript declarations, and representative formatting behaviour. The consumer has no development dependencies; the repository's compiler checks its TypeScript example.
 
-Tests should protect public behaviour or a demonstrated regression. Cover colour
-detection and overrides, ANSI nesting and resets, supported colour levels, and
-consumer imports. A coverage percentage is diagnostic, not a target.
+## What the tests protect
+
+Test public behaviour and demonstrated regressions. The suite covers colour detection and override precedence, stream-specific instances, colour levels, ANSI mappings and aliases, nesting, optional reset restoration, large inputs, and the documented template-helper integration. Package checks cover the consumer boundary. Separate tests protect CI's decision to reuse or rerun checks.
+
+Add a test when it distinguishes a meaningful failure. A coverage percentage is diagnostic, not a target; an extra input alone does not justify another test.
 
 ## Dependencies and style
 
-The library has no runtime dependencies. Its four direct development dependencies
-have specific jobs: TypeScript compiles and checks the source, `@types/node` checks
-Node API usage, Terser reduces shipped code, and `colorize-template` tests the
-documented optional integration. Node provides tests, assertions, coverage and
-filesystem cleanup. There are no Git hooks, commit-message rules, lint plugins or
-mandatory formatter. Follow the surrounding style and keep changes focused.
+Fude has no runtime dependencies. Four direct development dependencies remain:
 
-If an existing checkout still has Husky's local hook setting, remove it once:
+| Dependency | Job |
+| --- | --- |
+| TypeScript | Compile the source, generate declarations and check types. |
+| `@types/node` | Check use of Node APIs. |
+| Terser | Reduce the JavaScript shipped to consumers. |
+| `colorize-template` | Test the optional integration documented in the README. |
+
+Node provides testing, assertions, coverage and filesystem cleanup. There are no commit hooks, commit-message rules, lint plugins or mandatory formatter. Follow the surrounding style and keep the diff focused.
+
+If an older checkout still points at Husky's hooks, remove that local setting once:
 
 ```sh
 git config --local --unset core.hooksPath
 ```
 
-Do not commit generated files or change the version unless preparing a release.
+## CI and repository settings
 
-## CI and releases
+`Node.js CI` runs on pull requests to `main`, pushes to `main`, and manual dispatch. The **CI passed** check aggregates the matrix, including package checks and coverage.
 
-CI and the package's engine range support maintained LTS releases only: Node 22,
-24 and 26, plus Windows on Node 26. Dropping older runtimes requires a major
-release. Update the matrix and engine range when LTS maintenance changes.
-Contributor tooling uses Node 26. Set the required
-branch check to **CI passed**; it aggregates the matrix instead of depending on
-individual version names. Require branches to be up to date before merging so
-the tested merge tree matches `main`.
+Configure protection for `main` to require **CI passed** and up-to-date branches. Remove the obsolete `build (18.x)` requirement. Using the aggregate avoids tying branch protection to a particular runtime version.
 
-On a push to `main`, CI reuses a successful PR run only if its verification marker
-matches the exact Git tree now on `main`. Direct pushes, admin bypasses, changed
-merge trees, missing results and API failures run the checks. Other independent
-workflows are unaffected. This pipeline does not add CodeQL or external coverage uploads.
-Dependabot groups updates into npm and Actions PRs.
+After a PR merge, the push workflow checks whether a successful PR run verified the exact Git tree now on `main`. If it did, the matrix is skipped. Changed merge trees, direct pushes without matching PR proof, bypassed checks, missing results and API failures run the checks. Independent workflows are unaffected.
 
-Publishing a GitHub release with tag `v<package version>` validates and publishes
-the exact tested npm tarball. Pre-releases use npm's `next` tag. GitHub Packages
-publication is not configured: it requires a separate scoped package name.
+Dependabot groups npm and Actions updates. This pipeline does not add CodeQL or external coverage uploads.
 
-The workflow supports npm trusted publishing. In npm's `fude` package settings,
-configure GitHub Actions with owner `msanguineti`, repository `fude`, and workflow
-filename `npm-publish.yml`, allowing direct publication. Until that is configured,
-the existing `npm_token` repository secret remains the fallback. After verifying
-trusted publishing, remove that write token. No release is created automatically.
+## Releases
+
+1. Select the version and update `package.json` and `package-lock.json`. Respect breaking changes, including runtime support changes.
+2. Run `npm ci` and `npm run test:package`, then merge the release changes through a passing PR.
+3. Create a GitHub release with a tag exactly matching `v<package version>`.
+
+Publishing that release runs `npm-publish.yml`. It checks the tag against the package version, builds and tests the minified library, then validates the npm tarball in an isolated consumer. It publishes that same tarball with provenance. Stable releases use `latest`; GitHub prereleases use `next`.
+
+Local `npm pack` and `npm publish` invoke `prepack`, which builds and tests the library. The release workflow adds the isolated-consumer check. Tests do not publish anything. No workflow creates releases automatically.
+
+GitHub Packages publication is not configured; it would require a separate scoped package name.
+
+### npm authentication
+
+The workflow supports trusted publishing through OpenID Connect. In npm's settings for `fude`, add a GitHub Actions trusted publisher with:
+
+| Field | Value |
+| --- | --- |
+| Owner | `msanguineti` |
+| Repository | `fude` |
+| Workflow filename | `npm-publish.yml` |
+| Environment | Leave unset; the workflow does not select one. |
+| Direct publishing | Allow `npm publish`. |
+
+The existing `npm_token` repository secret remains the fallback until trusted publishing is configured. After verifying a trusted publication, remove the fallback token and its workflow reference. See [npm's trusted-publishing documentation](https://docs.npmjs.com/trusted-publishers/).

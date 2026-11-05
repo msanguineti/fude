@@ -1,245 +1,180 @@
-# ![fude](media/fude-logo.png)
+# Fude 筆
 
-> [nodejs][nodejs] library for terminal text style formatting.
+A small Node.js library for colouring and styling terminal text. No runtime dependencies; TypeScript declarations included.
 
-[![npm][badge_npm]][fude]
-![npm_dt][badge_npm_dt]
-![npm_license][badge_npm_license]
-![npm_types][badge_npm_types]
-![size][badge_size]
-![dependabot][badge_dependabot]
-![Node.js CI][badge_nodejs_ci]
+[![npm](https://badgen.net/npm/v/fude)](https://www.npmjs.com/package/fude)
+[![CI](https://github.com/msanguineti/fude/actions/workflows/node.js.yml/badge.svg)](https://github.com/msanguineti/fude/actions/workflows/node.js.yml)
 
-## Features
+Supports maintained Node.js LTS lines: **22, 24 and 26**.
 
-- Fast loading, fast performing
-- [`NO_COLOR`][no_color] friendly
-- TypeScript support (types included)
-- Automatic color detection
-- Overrideable color support (e.g. stdout, stderr, etc.)
-- No dependencies
-- 8-bit, 24-bit color support
-- Proper `bold`, `dim` support
-- Proper `reset` support (optional with env variable or argument flag)
-- Tagged template literals support (with helper library)
-
-Supports maintained Node.js LTS releases: 22, 24 and 26. Development uses Node.js 26.
-
-## Install
+## Install and use
 
 ```sh
-$ npm i fude
+npm install fude
 ```
 
-## Usage
+ES modules and TypeScript:
 
-Import `fude` the way you need it:
-
-```ts
+```js
 import { bgRed, white, bgWhite, black } from 'fude'
+
 console.log(bgRed(white('筆')) + bgWhite(black(' fude ')))
 ```
+
+CommonJS:
 
 ```js
 const { bgRed, white, bgWhite, black } = require('fude')
+
 console.log(bgRed(white('筆')) + bgWhite(black(' fude ')))
 ```
 
-```js
-import fude from 'fude'
-console.log(fude.bgRed(fude.white('筆')) + fude.bgWhite(fude.black(' fude ')))
-```
+Formatting functions accept a string or number and return a string. Nest calls to combine styles:
 
 ```js
-const fude = require('fude')
-console.log(fude.bgRed(fude.white('筆')) + fude.bgWhite(fude.black(' fude ')))
+import { bold, red } from 'fude'
+
+console.log(bold(red('Something went wrong')))
 ```
 
-## Styles
+Fude detects colour support from `stdout` when the module is loaded. When a style is unavailable, its function returns plain text. Choose an explicit level or a different stream with `Fude` below.
 
-Character styles applicable to text.
+## Colours and styles
 
-| Modifiers       | Fg colors (normal) | Fg colors (bright) | Bg colors (normal) | Bg colors (bright) |
-| --------------- | ------------------ | ------------------ | ------------------ | ------------------ |
-| `reset`         | `black`            | `blackBright`      | `bgBlack`          | `bgBlackBright`    |
-| `bold`          | `red`              | `redBright`        | `bgRed`            | `bgRedBright`      |
-| `dim`           | `green`            | `greenBright`      | `bgGreen`          | `bgGreenBright`    |
-| `italic`        | `yellow`           | `yellowBright`     | `bgYellow`         | `bgYellowBright`   |
-| `underline`     | `blue`             | `blueBright`       | `bgBlue`           | `bgBlueBright`     |
-| `inverse`       | `magenta`          | `magentaBright`    | `bgMagenta`        | `bgMagentaBright`  |
-| `hidden`        | `cyan`             | `cyanBright`       | `bgCyan`           | `bgCyanBright`     |
-| `strikethrough` | `white`            | `whiteBright`      | `bgWhite`          | `bgWhiteBright`    |
-|                 |                    |                    |                    |                    |
+| Category | Functions |
+| --- | --- |
+| Foreground | `black`, `red`, `green`, `yellow`, `blue`, `magenta`, `cyan`, `white` |
+| Bright foreground | `blackBright`, `redBright`, `greenBright`, `yellowBright`, `blueBright`, `magentaBright`, `cyanBright`, `whiteBright` |
+| Background | `bgBlack`, `bgRed`, `bgGreen`, `bgYellow`, `bgBlue`, `bgMagenta`, `bgCyan`, `bgWhite` |
+| Bright background | `bgBlackBright`, `bgRedBright`, `bgGreenBright`, `bgYellowBright`, `bgBlueBright`, `bgMagentaBright`, `bgCyanBright`, `bgWhiteBright` |
+| Modifiers | `bold`, `dim`, `italic`, `underline`, `blink`, `inverse`, `hidden`, `strikethrough`, `reset` |
+| Extended colours | `ansi256`, `bgAnsi256`, `rgb`, `bgRgb`, `hex`, `bgHex` |
 
-> `blackBright` is also `gray` or `grey` \
-> `bgBlackBright` is also `bgGray` or `bgGrey`
+`gray` and `grey` are aliases for `blackBright`; `bgGray` and `bgGrey` are aliases for `bgBlackBright`. The terminal determines how supported styles appear.
 
-## 8-bit and 24-bit color support
-
-Examples:
+Extended colour functions take a colour first, then the text:
 
 ```js
-import f from 'fude'
+import { ansi256, rgb, bgHex } from 'fude'
 
-console.log(f.ansi256(9)('red'))
-
-console.log(f.rgb(255, 99, 71)('tomato text'))
-
-console.log(f.bgHex('#FFBF47')('mustard background'))
+console.log(ansi256(9)('red'))
+console.log(rgb(255, 99, 71)('tomato text'))
+console.log(bgHex('#FFBF47')('mustard background'))
 ```
 
-## Color support override
+Use ANSI colour indices and RGB channel values from `0` to `255`. Hex colours accept three or six digits, with or without `#`.
 
-### Programmatically
+## Colour support
 
-It is possible to override the automatic detection of the color support level. This might be useful for when piping the output to a file, or splitting the `stderr` and `stdout` streams.
+| Level | Basic colours and modifiers | ANSI 256 colours | RGB and hex |
+| --- | --- | --- | --- |
+| `0` | Plain text | Plain text | Plain text |
+| `1` | Enabled | Plain text | Plain text |
+| `2` | Enabled | Enabled | Plain text |
+| `3` | Enabled | Enabled | Enabled |
+
+Extended colours return plain text below their required level; they are not converted to a smaller palette. `colorSupportLevel` exports the level chosen for the default functions.
+
+### Explicit levels and streams
+
+`Fude({ level })` creates a set of formatting functions without changing the default exports:
 
 ```js
-import f from 'fude'
+import { Fude } from 'fude'
 
-const noColors = f.Fude({ level: 0 }) // color support levels: 0 none, 1 basic, 2 ANSI 256, 3 Truecolor
+const plain = Fude({ level: 0 })
+const truecolor = Fude({ level: 3 })
+const errors = Fude({ level: 'stderr' })
 
-console.log(f.red('red text!')) // in red
-
-console.log(noColors.red('red text?')) // nope, text is plain
-
-const errorStream = f.Fude({ level: 'stderr' }) // get the support level of `stderr` or `stdout`
-
-console.error(errorStream.red('Error!')) // this will be red only if stderr supports colors
+console.log(plain.red('Plain text, even in a colour terminal'))
+console.log(truecolor.rgb(255, 99, 71)('Explicit truecolour output'))
+console.error(errors.red('Uses stderr colour detection'))
 ```
 
-### Environment variables
+Numeric levels are explicit overrides. The stream choices, `'stdout'` and `'stderr'`, detect the selected stream when the instance is created.
 
-`FORCE_COLOR` can be used to override the automatic detection of the color support level. (see [NodeJS TTY][nodetty])
+### Environment variables and arguments
 
-Valid values are:
+The default exports choose a level in this order:
 
-- `0`: Switch off color support
-- `1`: Basic color support
-- `2`: ANSI 256 color support
-- `3`: Truecolor color support
+1. A valid `FORCE_COLOR` value: `0`, `1`, `2` or `3`.
+2. A numbered argument: `--color=0`, `--color=1`, `--color=2` or `--color=3`.
+3. Colour disabled by `NO_COLOR`, `NODE_DISABLE_COLORS` or `--no-color`.
+4. Automatic detection from `stdout`.
 
-**Any other value will be ignored (switch on auto color detection).**
+The presence of either disabling variable, including an empty value, disables colour unless a valid override takes precedence. Unrecognised `FORCE_COLOR` values are ignored; the remaining settings still apply. Bare `--color` leaves automatic detection in place rather than forcing colour.
 
 ```sh
-# color support set to basic colors
-FORCE_COLOR=1 node example.js
+FORCE_COLOR=3 node example.js
+NO_COLOR=1 node example.js
+node example.js --color=2
+node example.js --no-color
 ```
 
-`NO_COLOR` (also `NODE_DISABLE_COLORS`) can be used to switch off the color support.
+Set environment variables and arguments before importing Fude; the default functions are configured at module load.
 
-```sh
-# color support set to none
-NO_COLOR= node example.js
-```
+## Nested styles and resets
 
-> `FORCE_COLOR` overrides both `NO_COLOR` and `NODE_DISABLE_COLORS`
-
-### CLI Arguments `--color[=0|1|2|3]` and `--no-color`
-
-```sh
-# --color without a value will set color support to auto detection (the default)
-$ node example.js --color
-# color support set to none
-$ node example.js --no-color
-# color support set to truecolor
-$ node example.js --color=3
-```
-
-## Proper `bold` and `dim` support
-
-Given a string like this (with embedded `dim`s and `bold`s)
+Fude restores an outer colour after a nested colour span. Nested `bold` and `dim` spans restore the outer modifier too:
 
 ```js
-import c from 'fude' // 'chalk', 'colorette', 'picocolors' or 'kleur'
+import { bold, dim, red, green } from 'fude'
 
-const output =
-  c.dim(' dim ' + c.bold(' bold ') + ' dim ') +
-  c.bold(' bold ' + c.dim(' dim ') + ' bold ')
+console.log(red('red ' + green('green') + ' red again'))
+console.log(dim('dim ' + bold('bold') + ' dim again'))
 ```
 
-We get these results:
-
-![fude](media/bold_dim.png)
-
-> `fude` handles `bold` and `dim` properly by default.
-
-## Proper `reset` support
-
-`fude` does not properly handle reset by default. This is the behaviour of every other CLI text styling library. The reason is that the check for reset is expensive, and it is not necessary for most cases.
-
-To fix this, you can use the env variable `HANDLE_RESET` or the argument flag `--handle-reset`.
+To restore an outer style after a nested `reset(...)` call, enable reset handling before importing Fude:
 
 ```sh
-# handle reset
-HANDLE_RESET= node example.js
-
-# handle reset
+HANDLE_RESET=1 node example.js
+# or
 node example.js --handle-reset
 ```
 
-This is what I mean by properly handling `reset`:
+```js
+import { red, reset } from 'fude'
 
-![fude](media/reset.png)
+console.log(red('red ' + reset('plain') + ' red again'))
+```
 
-## Tagged Template Literals
+Without that option, text after the nested reset stays reset until another style opens. Reset handling adds an extra scan; it is off by default. The option restores styles after Fude's own reset closing sequence (`ESC[m`).
 
-Tagged template literals are supported with a helper library such as [colorize-template][colorize-template].
+## Tagged templates
+
+Install the optional helper separately:
+
+```sh
+npm install colorize-template
+```
 
 ```js
-import fude from 'fude'
+import * as fude from 'fude'
 import { createColorize } from 'colorize-template'
 
 const colorize = createColorize(fude)
-
-console.log(colorize`{bgRed {white 筆}}{bgWhite ${fude.rgb(0, 0, 0)('fude ')}}`)
+console.log(colorize`{bgRed {white 筆}}{bgWhite ${fude.rgb(0, 0, 0)(' fude ')}}`)
 ```
 
-## What's in a name?
+For JavaScript interpolation, pass a template literal to an ordinary formatting call:
 
-[**Fude**][ink_brush] (筆 - Japanese pronunciation: [[ɸɯ̟ᵝde̞][ipa]] foo-de -- **de** as in **de**ntist) is Japanese for a calligraphy brush. Since there isn't really a plural form in Japanese, in this case 'fude' can be interpreted as 'brushes'.
+```js
+import { red } from 'fude'
 
-## Thanks & Credits
+const name = 'world'
+console.log(red(`Hello ${name}`))
+```
 
-Thanks to the authors of and contributors to [`colorette`][colorette] and [`picocolors`][picocolors] for their work which I have borrowed heavily to improve performance in v3.0.
+The helper provides the structured tagged-template syntax above.
 
-Also, thanks to [`chalk`][chalk] because it is always the slowest and everyone badmouths it, but it has a gazillion of installations and everyone envies it.
+## Development and releases
 
-Benchmarks? Every CLI text styling library has its own benchmarks and it is always the fastest... go figure.
+See [Contributing.md](Contributing.md) for development commands, test scope, CI and publishing. Changes to supported Node.js lines are recorded in the [release notes](https://github.com/msanguineti/fude/releases).
 
-## Changelog
+## Name and credits
 
-The changelog can be found on the [Releases page][releases].
+*Fude* (筆, pronounced foo-de, with *de* as in *dentist*) is Japanese for a calligraphy brush.
 
-## Contributing
+Thanks to the authors and contributors of [colorette](https://github.com/jorgebucaran/colorette), [picocolors](https://github.com/alexeyraspopov/picocolors) and [Chalk](https://github.com/chalk/chalk). Fude's implementation drew particularly on colorette and picocolors.
 
-PRs welcomed here.
-
-## Authors and license
-
-[Mirco Sanguineti][msanguineti] and [contributors][contributors].
-
-MIT License, see the included [LICENCE](LICENCE) file.
-
-[msanguineti]: https://github.com/msanguineti/
-[repo]: https://github.com/msanguineti/fude
-[contributors]: https://github.com/msanguineti/fude/graphs/contributors
-[releases]: https://github.com/msanguineti/fude/releases
-[nodejs]: https://nodejs.org
-[badge_npm]: https://badgen.net/npm/v/fude
-[badge_npm_dt]: https://badgen.net/npm/dt/fude
-[badge_npm_license]: https://badgen.net/npm/license/fude
-[badge_npm_types]: https://badgen.net/npm/types/fude
-[badge_size]: https://badgen.net/packagephobia/install/fude
-[badge_dependabot]: https://badgen.net/github/dependabot/msanguineti/fude
-[badge_nodejs_ci]: https://github.com/msanguineti/fude/workflows/Node.js%20CI/badge.svg
-[ink_brush]: https://en.wikipedia.org/wiki/Ink_brush
-[ipa]: https://en.wikipedia.org/wiki/Help:IPA/Japanese
-[sgr_params]: (https://en.wikipedia.org/wiki/ANSI_escape_code#SGR_parameters)
-[fude]: https://npmjs.com/package/fude
-[nodetty]: https://nodejs.org/docs/latest-v14.x/api/tty.html#tty_writestream_getcolordepth_env
-[colorette]: https://npmjs.com/package/colorette
-[picocolors]: https://npmjs.com/package/picocolors
-[chalk]: https://npmjs.com/package/chalk
-[no_color]: https://no-color.org/
-[colorize-template]: https://npmjs.com/package/colorize-template
+By [Mirco Sanguineti](https://github.com/msanguineti) and [contributors](https://github.com/msanguineti/fude/graphs/contributors). [MIT licence](LICENCE).
