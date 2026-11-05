@@ -1,13 +1,20 @@
 {
   "name": "fude",
-  "version": "5.0.0",
-  "description": "Node.js library for terminal text style formatting",
+  "version": "5.0.1",
+  "description": "Tiny, dependency-free Node.js library for ANSI terminal colors and text styling, with RGB, hex and TypeScript support.",
   "keywords": [
+    "ansi",
     "terminal",
+    "terminal-colors",
     "colors",
-    "formatting",
     "cli",
-    "console"
+    "console",
+    "text-styling",
+    "truecolor",
+    "rgb",
+    "hex",
+    "typescript",
+    "nodejs"
   ],
   "author": "Mirco Sanguineti",
   "license": "MIT",

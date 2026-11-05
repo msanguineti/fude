@@ -1,6 +1,6 @@
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="media/fude-logo-dark.png">
-  <img src="media/fude-logo.png" alt="Fude — brush lettering beside a vermilion 筆 seal" width="420">
+  <img src="media/fude-logo.png" alt="Fude — brush lettering beside a vermilion 筆 seal" width="420" height="140">
 </picture>
 
 A small Node.js library for colouring and styling terminal text. No runtime dependencies; TypeScript declarations included.

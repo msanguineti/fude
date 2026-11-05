@@ -12,7 +12,7 @@ npm ci
 npm run test:package
 ```
 
-The package and CI support maintained LTS lines only: Node 22, 24 and 26. CI also checks Windows on Node 26. Update the engine range, matrix, `.nvmrc` and README when the supported lines change. Removing support for an existing runtime requires a major release; the current move from Node 18 to maintained LTS lines must ship in the next major version.
+The package and CI support maintained LTS lines only: Node 22, 24 and 26. CI also checks Windows on Node 26. Update the engine range, matrix, `.nvmrc` and README when the supported lines change. Removing support for an existing runtime requires a major release. Fude 5 dropped support for older Node.js lines.
 
 ## Development commands
 
@@ -90,6 +90,6 @@ The GitHub Actions trusted publisher is configured on npmjs for `fude`. Its sett
 | Environment | Leave unset; the workflow does not select one. |
 | Direct publishing | Allow `npm publish`. |
 
-The connection uses OpenID Connect, so the release workflow can authenticate without a stored npm token. A new connection remains pending until its first successful publication; follow any validation deadline shown in npm's package settings.
+The connection uses OpenID Connect, so the release workflow can authenticate without a stored npm token. If you replace the connection, follow any first-publication validation deadline shown in npm's package settings.
 
 The workflow uses trusted publishing only; it does not read an npm write token. An obsolete `npm_token` repository secret, if still present, is unused. Package token-access restrictions are configured separately on npmjs. See [npm's trusted-publishing documentation](https://docs.npmjs.com/trusted-publishers/).
