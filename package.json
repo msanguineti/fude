@@ -38,7 +38,7 @@
     "prepack": "npm run verify"
   },
   "devDependencies": {
-    "@types/node": "^22.20.5",
+    "@types/node": "^26.6.6",
     "colorize-template": "^1.0.0",
     "terser": "^5.51.2",
     "typescript": "^7.0.2"
