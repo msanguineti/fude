@@ -39,22 +39,22 @@ Import `fude` the way you need it:
 
 ```ts
 import { bgRed, white, bgWhite, black } from 'fude'
-console.log(bgRed(white`筆`) + bgWhite(black` fude `))
+console.log(bgRed(white('筆')) + bgWhite(black(' fude ')))
 ```
 
 ```js
 const { bgRed, white, bgWhite, black } = require('fude')
-console.log(bgRed(white`筆`) + bgWhite(black` fude `))
+console.log(bgRed(white('筆')) + bgWhite(black(' fude ')))
 ```
 
 ```js
 import fude from 'fude'
-console.log(fude.bgRed(fude.white`筆`) + fude.bgWhite(fude.black` fude `))
+console.log(fude.bgRed(fude.white('筆')) + fude.bgWhite(fude.black(' fude ')))
 ```
 
 ```js
 const fude = require('fude')
-console.log(fude.bgRed(fude.white`筆`) + fude.bgWhite(fude.black` fude `))
+console.log(fude.bgRed(fude.white('筆')) + fude.bgWhite(fude.black(' fude ')))
 ```
 
 ## Styles
@@ -87,7 +87,7 @@ console.log(f.ansi256(9)('red'))
 
 console.log(f.rgb(255, 99, 71)('tomato text'))
 
-console.log(f.hexBg('#FFBF47')('mustard background'))
+console.log(f.bgHex('#FFBF47')('mustard background'))
 ```
 
 ## Color support override

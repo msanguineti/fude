@@ -11,7 +11,7 @@ const autoDetectColorSupport = (stream: string) =>
     : (0 as ColorSupportLevel)
 
 const noColor =
-  process.argv.some((argument) => argument.startsWith('--no-color')) ||
+  process.argv.includes('--no-color') ||
   process.env.NODE_DISABLE_COLORS !== undefined ||
   process.env.NO_COLOR !== undefined
     ? 0
@@ -31,23 +31,29 @@ export const colorSupportLevel = forceColor
   ? Number.parseInt(forceColor, 10)
   : noColor ?? autoDetectColorSupport('stdout')
 
+// Local mutation avoids recursive stack growth and keeps replacement inexpensive.
+/* eslint-disable functional/no-let, functional/no-loop-statements, functional/no-expression-statements, no-param-reassign */
 const replaceSequence = (
   string: string,
   sequence: string,
   replace: string,
   index = string.indexOf(sequence),
-): string =>
-  index === -1
-    ? string
-    : string.slice(0, index) +
-      replace +
-      replaceSequence(string.slice(index + sequence.length), sequence, replace)
+): string => {
+  let result = ''
+  while (index !== -1) {
+    result += string.slice(0, index) + replace
+    string = string.slice(index + sequence.length)
+    index = string.indexOf(sequence)
+  }
+  return result + string
+}
+/* eslint-enable functional/no-let, functional/no-loop-statements, functional/no-expression-statements, no-param-reassign */
 
 const wrap = (
   string: string,
   open: string,
   close: string,
-  index = string.indexOf(close, open.length),
+  index = string.indexOf(close),
 ) =>
   index === -1
     ? open + string + close
@@ -67,7 +73,7 @@ const format = (open: string, close: string) => (text: string | number) =>
 
 const hasReset =
   process.env.HANDLE_RESET !== undefined ||
-  process.argv.some((argument) => argument.startsWith('--handle-reset'))
+  process.argv.includes('--handle-reset')
 
 const handleReset = hasReset ? formatReset : format
 
