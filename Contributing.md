@@ -50,8 +50,10 @@ Do not commit generated files or change the version unless preparing a release.
 
 ## CI and releases
 
-CI checks maintained Node releases (22, 24 and 26), Windows on Node 26, and Node 18
-as the oldest promised runtime. Contributor tooling uses Node 26. Set the required
+CI and the package's engine range support maintained LTS releases only: Node 22,
+24 and 26, plus Windows on Node 26. Dropping older runtimes requires a major
+release. Update the matrix and engine range when LTS maintenance changes.
+Contributor tooling uses Node 26. Set the required
 branch check to **CI passed**; it aggregates the matrix instead of depending on
 individual version names. Require branches to be up to date before merging so
 the tested merge tree matches `main`.

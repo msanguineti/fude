@@ -23,7 +23,7 @@
 - Proper `reset` support (optional with env variable or argument flag)
 - Tagged template literals support (with helper library)
 
-Requires Node.js 18 or newer. Development uses Node.js 26.
+Supports maintained Node.js LTS releases: 22, 24 and 26. Development uses Node.js 26.
 
 ## Install
 
