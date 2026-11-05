@@ -7,10 +7,8 @@
 ![npm_license][badge_npm_license]
 ![npm_types][badge_npm_types]
 ![size][badge_size]
-![coveralls][badge_coveralls]
 ![dependabot][badge_dependabot]
 ![Node.js CI][badge_nodejs_ci]
-![CodeQL][badge_codeql]
 
 ## Features
 
@@ -25,7 +23,7 @@
 - Proper `reset` support (optional with env variable or argument flag)
 - Tagged template literals support (with helper library)
 
-> ATTENTION: version 3.0.0 BREAKS backward compatibility with previous versions!
+Requires Node.js 18 or newer. Development uses Node.js 26.
 
 ## Install
 
@@ -233,10 +231,8 @@ MIT License, see the included [LICENCE](LICENCE) file.
 [badge_npm_license]: https://badgen.net/npm/license/fude
 [badge_npm_types]: https://badgen.net/npm/types/fude
 [badge_size]: https://badgen.net/packagephobia/install/fude
-[badge_coveralls]: https://badgen.net/coveralls/c/github/msanguineti/fude/main
 [badge_dependabot]: https://badgen.net/github/dependabot/msanguineti/fude
 [badge_nodejs_ci]: https://github.com/msanguineti/fude/workflows/Node.js%20CI/badge.svg
-[badge_codeql]: https://github.com/msanguineti/fude/workflows/CodeQL/badge.svg
 [ink_brush]: https://en.wikipedia.org/wiki/Ink_brush
 [ipa]: https://en.wikipedia.org/wiki/Help:IPA/Japanese
 [sgr_params]: (https://en.wikipedia.org/wiki/ANSI_escape_code#SGR_parameters)

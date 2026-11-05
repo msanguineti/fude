@@ -1,26 +1,90 @@
 name: Node.js CI
+
 on:
-  # push:
-  #   branches:
-  #     - main
   pull_request:
-    branches:
-      - main
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 jobs:
-  build:
+  gate:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version:
-          - 18.x
-          - 20.x
-          # - 22.x
+    permissions:
+      contents: read
+      actions: read
+      pull-requests: read
+    outputs:
+      run: ${{ steps.required.outputs.run }}
     steps:
-      - uses: actions/checkout@v3
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 26
+          package-manager-cache: false
+      - id: required
+        run: node scripts/ci-required.cjs
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+
+  build:
+    name: ${{ matrix.name || format('build ({0})', matrix.node-version) }}
+    needs: gate
+    if: needs.gate.outputs.run == 'true'
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest]
+        node-version: [18.x, 22.x, 24.x, 26.x]
+        include:
+          - os: windows-latest
+            node-version: 26.x
+            name: build (26.x, Windows)
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v7
         with:
           node-version: ${{ matrix.node-version }}
+          cache: npm
       - run: npm ci
-      - run: npm run build
-      - run: npm t
+      - run: npm run test:package
+      - if: matrix.node-version == '26.x' && matrix.os == 'ubuntu-latest'
+        run: npm run test:coverage
+
+  verified:
+    name: CI passed
+    needs: [gate, build]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Require successful checks or verified reuse
+        env:
+          GATE_RESULT: ${{ needs.gate.result }}
+          RUN_CHECKS: ${{ needs.gate.outputs.run }}
+          BUILD_RESULT: ${{ needs.build.result }}
+        run: |
+          if [ "$GATE_RESULT" != success ]; then exit 1; fi
+          if [ "$RUN_CHECKS" = true ] && [ "$BUILD_RESULT" != success ]; then exit 1; fi
+          if [ "$RUN_CHECKS" != true ] && [ "$RUN_CHECKS" != false ]; then exit 1; fi
+      - uses: actions/checkout@v7
+        if: needs.gate.outputs.run == 'true'
+        with:
+          persist-credentials: false
+      - id: tree
+        if: needs.gate.outputs.run == 'true'
+        run: echo "sha=$(git rev-parse 'HEAD^{tree}')" >> "$GITHUB_OUTPUT"
+      - name: Verified tree ${{ steps.tree.outputs.sha }}
+        if: needs.gate.outputs.run == 'true'
+        run: echo 'All checks passed for this tree.'
