@@ -1,52 +1,42 @@
-# This workflow will run tests using node and then publish a package to GitHub Packages when a release is created
-# For more information see: https://help.github.com/actions/language-and-framework-guides/publishing-nodejs-packages
-
-name: Node.js Package
+name: Publish npm package
 
 on:
   release:
-    types: [created]
+    types: [published]
+
+permissions:
+  contents: read
+  id-token: write
+
+concurrency:
+  group: publish-${{ github.event.release.tag_name }}
+  cancel-in-progress: false
 
 jobs:
-  build:
+  publish:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
         with:
-          node-version: 18
-      - run: npm ci
-      - run: npm run build
-      - run: npm test
-
-  publish-npm:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v4
+          ref: ${{ github.event.release.tag_name }}
+          persist-credentials: false
+      - uses: actions/setup-node@v7
         with:
-          node-version: 18
+          node-version: 26
           registry-url: https://registry.npmjs.org/
-      - run: npm ci
-      - run: npm run build
-      - run: npm run optimize
-      - run: npm publish
+          package-manager-cache: false
+      - name: Check release tag matches package version
+        run: node -e "require('node:assert/strict').equal(process.env.RELEASE_TAG, 'v' + require('./package.json').version)"
         env:
-          NODE_AUTH_TOKEN: ${{secrets.npm_token}}
-
-  publish-gpr:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 18
-          registry-url: https://npm.pkg.github.com/msanguineti
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
       - run: npm ci
-      - run: npm run build
-      - run: npm run optimize
-      - run: npm publish
+      - id: package
+        run: npm run test:package
         env:
-          NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
+          FUDE_KEEP_PACKAGE: '1'
+      - name: Publish the tested tarball
+        run: npm publish "$TARBALL" --ignore-scripts --provenance --access public --tag "$NPM_DIST_TAG"
+        env:
+          TARBALL: ${{ steps.package.outputs.tarball }}
+          NODE_AUTH_TOKEN: ${{ secrets.npm_token }}
+          NPM_DIST_TAG: ${{ github.event.release.prerelease && 'next' || 'latest' }}

@@ -32,7 +32,6 @@ export const colorSupportLevel = forceColor
   : noColor ?? autoDetectColorSupport('stdout')
 
 // Local mutation avoids recursive stack growth and keeps replacement inexpensive.
-/* eslint-disable functional/no-let, functional/no-loop-statements, functional/no-expression-statements, no-param-reassign */
 const replaceSequence = (
   string: string,
   sequence: string,
@@ -47,7 +46,6 @@ const replaceSequence = (
   }
   return result + string
 }
-/* eslint-enable functional/no-let, functional/no-loop-statements, functional/no-expression-statements, no-param-reassign */
 
 const wrap = (
   string: string,

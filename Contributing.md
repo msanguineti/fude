@@ -1,49 +1,95 @@
-# How to contribute
+# Contributing to Fude
 
-We love pull requests. And following this guidelines will make your pull request easier to merge.
+Keep the library small, preserve its public behaviour, and justify additions by a concrete need.
 
-If you want to contribute but don’t know what to do, take a look at these two labels: [help wanted](https://github.com/msanguineti/fude/issues?q=is%3Aissue+is%3Aopen+label%3A%22help+wanted%22) and [good first issue](https://github.com/msanguineti/fude/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22).
+## Get started
 
-_[Use GitHub interface](https://blog.sapegin.me/all/open-source-for-everyone/) for simple documentation changes, otherwise follow the steps below._
-
-## Prerequisites
-
-- If it’s your first pull request, watch [this amazing course](http://makeapullrequest.com/) by [Kent C. Dodds](https://twitter.com/kentcdodds).
-- Install [EditorConfig](https://editorconfig.org/) plugin for your code editor to make sure it uses correct settings.
-- Fork the repository and clone your fork.
-- Install dependencies: `npm install`.
-
-## Development workflow
-
-Run linters and tests:
+Use Node.js 26 and install the locked development dependencies:
 
 ```sh
-npm test
+nvm use
+npm ci
+npm run test:package
 ```
 
-Or run tests in watch mode:
+The package and CI support maintained LTS lines only: Node 22, 24 and 26. CI also checks Windows on Node 26. Update the engine range, matrix, `.nvmrc` and README when the supported lines change. Removing support for an existing runtime requires a major release; the current move from Node 18 to maintained LTS lines must ship in the next major version.
+
+## Development commands
+
+| Command | Purpose |
+| --- | --- |
+| `npm run check` | Check TypeScript without writing output. |
+| `npm run build` | Clean `dist`, compile TypeScript and minify JavaScript. |
+| `npm test` | Test the existing `dist` build with Node's test runner. |
+| `npm test -- --watch` | Watch tests; rebuild separately after source changes. |
+| `npm run verify` | Build and test the minified library. |
+| `npm run test:package` | Verify, pack and test an isolated package consumer. |
+| `npm run test:coverage` | Build readable JavaScript and report native coverage. |
+| `npm run clean` | Remove generated output. |
+
+Tests read `dist`, so rebuild after editing `src/index.ts`. Coverage leaves readable output in `dist`; run the normal build again to restore minified output. Generated files are ignored and should not be committed.
+
+`test:package` verifies the build, packs it without rebuilding, then installs the tarball in a temporary consumer. It checks the package contents, CommonJS and native ESM imports, TypeScript declarations, and representative formatting behaviour. The consumer has no development dependencies; the repository's compiler checks its TypeScript example.
+
+## What the tests protect
+
+Test public behaviour and demonstrated regressions. The suite covers colour detection and override precedence, stream-specific instances, colour levels, ANSI mappings and aliases, nesting, optional reset restoration, large inputs, and the documented template-helper integration. Package checks cover the consumer boundary. Separate tests protect CI's decision to reuse or rerun checks.
+
+Add a test when it distinguishes a meaningful failure. A coverage percentage is diagnostic, not a target; an extra input alone does not justify another test.
+
+## Dependencies and style
+
+Fude has no runtime dependencies. Four direct development dependencies remain:
+
+| Dependency | Job |
+| --- | --- |
+| TypeScript | Compile the source, generate declarations and check types. |
+| `@types/node` | Check use of Node APIs. |
+| Terser | Reduce the JavaScript shipped to consumers. |
+| `colorize-template` | Test the optional integration documented in the README. |
+
+Node provides testing, assertions, coverage and filesystem cleanup. There are no commit hooks, commit-message rules, lint plugins or mandatory formatter. Follow the surrounding style and keep the diff focused.
+
+If an older checkout still points at Husky's hooks, remove that local setting once:
 
 ```sh
-npm run test -- --watch
+git config --local --unset core.hooksPath
 ```
 
-**Don’t forget to add tests and update documentation for your changes.**
+## CI and repository settings
 
-Check coverage:
+`Node.js CI` runs on pull requests to `main`, pushes to `main`, and manual dispatch. The **CI passed** check aggregates the matrix, including package checks and coverage.
 
-```sh
-npm run test -- --coverage
-```
+Protection for `main` requires **CI passed** and up-to-date branches. Keep the aggregate as the required check when changing the runtime matrix.
 
-**Please, strive for 100% coverage -- I know 100% is not technically necessary, but...**
+After a PR merge, the push workflow checks whether a successful PR run verified the exact Git tree now on `main`. If it did, the matrix is skipped. Changed merge trees, direct pushes without matching PR proof, bypassed checks, missing results and API failures run the checks. Independent workflows are unaffected.
 
-## Other notes
+Dependabot groups npm and Actions updates. This pipeline does not add CodeQL or external coverage uploads.
 
-- If you have commit access to repository and want to make big change or not sure about something, make a new branch and open pull request.
-- We’re using [Prettier](https://github.com/prettier/prettier) to format code, so don’t worry much about code formatting.
-- Don’t commit generated files, like minified JavaScript.
-- Don’t change version number and changelog.
+## Releases
 
-## Need help?
+1. Select the version and update `package.json` and `package-lock.json`. Respect breaking changes, including runtime support changes.
+2. Run `npm ci` and `npm run test:package`, then merge the release changes through a passing PR.
+3. Create a GitHub release with a tag exactly matching `v<package version>`.
 
-If you want to contribute but have any questions, concerns or doubts, feel free to ping maintainers. Ideally create a pull request with `WIP` (Work in progress) in its title and ask questions in the pull request description.
+Publishing that release runs `npm-publish.yml`. It checks the tag against the package version, builds and tests the minified library, then validates the npm tarball in an isolated consumer. It publishes that same tarball with provenance. Stable releases use `latest`; GitHub prereleases use `next`.
+
+Local `npm pack` and `npm publish` invoke `prepack`, which builds and tests the library. The release workflow adds the isolated-consumer check. Tests do not publish anything. No workflow creates releases automatically.
+
+GitHub Packages publication is not configured; it would require a separate scoped package name.
+
+### npm authentication
+
+The GitHub Actions trusted publisher is configured on npmjs for `fude`. Its settings must match the release workflow:
+
+| Field | Value |
+| --- | --- |
+| Owner | `msanguineti` |
+| Repository | `fude` |
+| Workflow filename | `npm-publish.yml` |
+| Environment | Leave unset; the workflow does not select one. |
+| Direct publishing | Allow `npm publish`. |
+
+The connection uses OpenID Connect, so the release workflow can authenticate without a stored npm token. A new connection remains pending until its first successful publication; follow any validation deadline shown in npm's package settings.
+
+The existing `npm_token` secret and fallback remain in place until a successful trusted publication has been verified. Then remove the fallback token and its workflow reference. Package token-access restrictions are configured separately on npmjs. See [npm's trusted-publishing documentation](https://docs.npmjs.com/trusted-publishers/).
