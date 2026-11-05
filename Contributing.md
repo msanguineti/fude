@@ -60,7 +60,7 @@ git config --local --unset core.hooksPath
 
 `Node.js CI` runs on pull requests to `main`, pushes to `main`, and manual dispatch. The **CI passed** check aggregates the matrix, including package checks and coverage.
 
-Configure protection for `main` to require **CI passed** and up-to-date branches. Remove the obsolete `build (18.x)` requirement. Using the aggregate avoids tying branch protection to a particular runtime version.
+Protection for `main` requires **CI passed** and up-to-date branches. Keep the aggregate as the required check when changing the runtime matrix.
 
 After a PR merge, the push workflow checks whether a successful PR run verified the exact Git tree now on `main`. If it did, the matrix is skipped. Changed merge trees, direct pushes without matching PR proof, bypassed checks, missing results and API failures run the checks. Independent workflows are unaffected.
 
@@ -80,7 +80,7 @@ GitHub Packages publication is not configured; it would require a separate scope
 
 ### npm authentication
 
-The workflow supports trusted publishing through OpenID Connect. In npm's settings for `fude`, add a GitHub Actions trusted publisher with:
+The GitHub Actions trusted publisher is configured on npmjs for `fude`. Its settings must match the release workflow:
 
 | Field | Value |
 | --- | --- |
@@ -90,4 +90,6 @@ The workflow supports trusted publishing through OpenID Connect. In npm's settin
 | Environment | Leave unset; the workflow does not select one. |
 | Direct publishing | Allow `npm publish`. |
 
-The existing `npm_token` repository secret remains the fallback until trusted publishing is configured. After verifying a trusted publication, remove the fallback token and its workflow reference. See [npm's trusted-publishing documentation](https://docs.npmjs.com/trusted-publishers/).
+The connection uses OpenID Connect, so the release workflow can authenticate without a stored npm token. A new connection remains pending until its first successful publication; follow any validation deadline shown in npm's package settings.
+
+The existing `npm_token` secret and fallback remain in place until a successful trusted publication has been verified. Then remove the fallback token and its workflow reference. Package token-access restrictions are configured separately on npmjs. See [npm's trusted-publishing documentation](https://docs.npmjs.com/trusted-publishers/).

@@ -1,9 +1,12 @@
-# Fude 筆
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="media/fude-logo-dark.png">
+  <img src="media/fude-logo.png" alt="Fude — brush lettering beside a vermilion 筆 seal" width="420">
+</picture>
 
 A small Node.js library for colouring and styling terminal text. No runtime dependencies; TypeScript declarations included.
 
-[![npm](https://badgen.net/npm/v/fude)](https://www.npmjs.com/package/fude)
-[![CI](https://github.com/msanguineti/fude/actions/workflows/node.js.yml/badge.svg)](https://github.com/msanguineti/fude/actions/workflows/node.js.yml)
+[![npm version](https://badgen.net/npm/v/fude)](https://www.npmjs.com/package/fude)
+[![CI status](https://github.com/msanguineti/fude/actions/workflows/node.js.yml/badge.svg)](https://github.com/msanguineti/fude/actions/workflows/node.js.yml)
 
 Supports maintained Node.js LTS lines: **22, 24 and 26**.
 
