@@ -72,7 +72,7 @@ Dependabot groups npm and Actions updates. This pipeline does not add CodeQL or 
 2. Run `npm ci` and `npm run test:package`, then merge the release changes through a passing PR.
 3. Create a GitHub release with a tag exactly matching `v<package version>`.
 
-Publishing that release runs `npm-publish.yml`. It checks the tag against the package version, builds and tests the minified library, then validates the npm tarball in an isolated consumer. It publishes that same tarball with provenance. Stable releases use `latest`; GitHub prereleases use `next`.
+Publishing that release runs `npm-publish.yml`. It requires the tagged commit to be on `main` and checks that the tag, package version and GitHub prerelease flag agree. It builds and tests the minified library, then validates the npm tarball in an isolated consumer and publishes that same tarball with provenance. Stable releases use `latest`; versions such as `5.0.0-rc.1` must be GitHub prereleases and use `next`. Publication runs are serialized.
 
 Local `npm pack` and `npm publish` invoke `prepack`, which builds and tests the library. The release workflow adds the isolated-consumer check. Tests do not publish anything. No workflow creates releases automatically.
 
@@ -92,4 +92,4 @@ The GitHub Actions trusted publisher is configured on npmjs for `fude`. Its sett
 
 The connection uses OpenID Connect, so the release workflow can authenticate without a stored npm token. A new connection remains pending until its first successful publication; follow any validation deadline shown in npm's package settings.
 
-The existing `npm_token` secret and fallback remain in place until a successful trusted publication has been verified. Then remove the fallback token and its workflow reference. Package token-access restrictions are configured separately on npmjs. See [npm's trusted-publishing documentation](https://docs.npmjs.com/trusted-publishers/).
+The workflow uses trusted publishing only; it does not read an npm write token. An obsolete `npm_token` repository secret, if still present, is unused. Package token-access restrictions are configured separately on npmjs. See [npm's trusted-publishing documentation](https://docs.npmjs.com/trusted-publishers/).
